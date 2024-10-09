@@ -36,6 +36,15 @@ app.get('/api/next/:counterId',async (req,res)=>{
         res.status(503).json({ error: error.message });
     }
 })
+
+app.get('api/ticket/:service', async(req, res) => {
+    try{
+        result = await newTicket(req.params.service);
+        res.status(200).json(result);
+    }catch(error){
+        res.status(503).json({error: error.message});
+    }
+})
 // activate the server
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);

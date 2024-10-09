@@ -1,4 +1,5 @@
 import { db } from "../db/db.mjs";
+
 export const getNextCustomer = (counterId)=>{
     return new Promise(async (resolve, reject) => {
         const services=await getCounterServices(counterId);

@@ -12,9 +12,15 @@ const getServices=async()=>{
         throw new Error("Internal server error");
       }
 }
-const API = {
-    getServices
 
+async function getTicket(service) {
+  const ticket = await fetch(`${SERVER_URL}/ticket/${service}`)
+  .then(response => response.json());
+  return ticket;
+}
+
+const API = {
+    getServices, getTicket
   };
 
   export default API;
