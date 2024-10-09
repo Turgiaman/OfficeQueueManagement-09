@@ -5,12 +5,20 @@ const getCounters = async () => {
     if (res.ok) {
       const countersJson = await res.json();
       return countersJson;
-    }
-    else {
+    }else {
       throw new Error('Internal Server Error');
     }
 }
-  
 
-  const API = {getCounters}
-  export default API;
+const getServicesByCounterId = async (counterId) => {
+  const res = await fetch(SERVER_URL + `/api/counters/${counterId}/services`);
+  if(res.ok){
+    const services = await res.json();
+    return services;
+  }else{
+    throw new Error('Internal Server Error');
+  }
+}
+
+const API = {getCounters, getServicesByCounterId}
+export default API;

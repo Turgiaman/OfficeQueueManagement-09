@@ -13,7 +13,23 @@ export default function CounterDao(){
                     return reject(err);
                 }
                 else resolve(rows);
-            })
+            });
+        });
+    }
+    this.getServicesByCounterId = (counterId) => {
+        return new Promise((resolve,reject) => {
+            const sql = `
+                SELECT s.id, s.name 
+                FROM service s
+                JOIN counter_service cs ON s.id = cs.service_id
+                WHERE cs.counter_id = ?`;
+            db.all(sql, [counterId], (err,rows)=> {
+                if(err) {
+                    return reject(err);
+                }else{
+                    resolve(rows);
+                }
+            });
         });
     }
 }

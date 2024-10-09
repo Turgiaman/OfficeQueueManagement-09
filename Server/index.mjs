@@ -32,6 +32,16 @@ app.get('/api/counters', async (req, res) => {
   }
 });
 
+app.get('/api/counters/:id/services', async (req, res) => {
+  try {
+      const counterId = req.params.id;
+      const services = await counterDao.getServicesByCounterId(counterId);
+      res.status(200).json(services);
+  } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 app.get('/api/services',async (req,res)=>{
     try {
         let services=await getServices();
