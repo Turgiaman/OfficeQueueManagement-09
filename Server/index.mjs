@@ -1,6 +1,9 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import CounterDao from "./dao/counterDao.mjs";
+
+const counterDao = new CounterDao();
 
 // init express
 const app = new express();
@@ -15,6 +18,16 @@ const corsOptions = {
   credentials: true,
 };
 app.use(cors(corsOptions));
+
+app.get('/api/counters', async (req, res) => {
+  try {
+    const counters = await counterDao.getCounters();
+    return res.status(200).json(counters);
+  }
+  catch (error) {
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 // activate the server
 app.listen(port, () => {

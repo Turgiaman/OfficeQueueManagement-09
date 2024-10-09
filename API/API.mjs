@@ -12,6 +12,21 @@ const getServices=async()=>{
         throw new Error("Internal server error");
       }
 }
+
+const getCounters=async()=>{
+  const response= await fetch(`${SERVER_URL}/counters`,{
+      method:'GET',
+    });
+    const services = await response.json();
+    if(response.ok){
+      return services;
+    }
+    else{
+      throw new Error("Internal server error");
+    }
+}
+
+
 const API = {
     getServices
 
