@@ -2,10 +2,11 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import CounterDao from "./dao/counterDao.mjs";
-import { getServices } from "./dao/totemDao.mjs";
+import TotemDao from "./dao/totemDao.mjs";
 import { getNextCustomer } from "./dao/officerDao.mjs";
 
 const counterDao = new CounterDao();
+const totemDao = new TotemDao();
 
 // init express
 const app = new express();
@@ -44,7 +45,7 @@ app.get('/api/counters/:id/services', async (req, res) => {
 
 app.get('/api/services',async (req,res)=>{
     try {
-        let services=await getServices();
+        let services=await totemDao.getServices();
         res.status(200).json(services);
     } catch (error) {
         res.status(503).json({ error: error.message });
@@ -62,12 +63,13 @@ app.get('/api/next/:counterId',async (req,res)=>{
 
 app.get('api/ticket/:service', async(req, res) => {
     try{
-        result = await newTicket(req.params.service);
+        result = await totemDao.getTicket(req.params.service);
         res.status(200).json(result);
     }catch(error){
         res.status(503).json({error: error.message});
     }
 })
+
 // activate the server
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
