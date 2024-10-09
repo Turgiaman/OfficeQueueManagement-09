@@ -1,6 +1,6 @@
-import db from "../db/db.mjs";
+import { db } from "../db/db.mjs";
 
-export default function totemDao(){
+export default function TotemDao(){
     this.getServices = ()=>{
         return new Promise((resolve, reject) => {
             const sql = "SELECT name FROM  service";

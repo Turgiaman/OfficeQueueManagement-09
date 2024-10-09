@@ -2,11 +2,11 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import CounterDao from "./dao/counterDao.mjs";
-import totemDao from "./dao/totemDao.mjs";
+import TotemDao from "./dao/totemDao.mjs";
 import { getNextCustomer } from "./dao/officerDao.mjs";
 
 const counterDao = new CounterDao();
-const totemDao = new totemDao();
+const totemDao = new TotemDao();
 
 // init express
 const app = new express();
