@@ -1,4 +1,5 @@
 import { db } from "../db/db.mjs";
+import dayjs from 'dayjs';
 
 export default function TotemDao(){
     this.getServices = ()=>{
@@ -13,15 +14,18 @@ export default function TotemDao(){
           });
     }
 
-    this.getTicket = (service)=>{
+    this.getTicket = (serviceTag)=>{
         return new Promise((resolve, reject) => {
-            const sql = "INSERT INTO ticket (service, served) VALUES (?, 0)";
-            db.run(sql, [service], function(err){
+            const date = dayjs();
+            const sql = "INSERT INTO ticket (date, s_tag, c_id) VALUES (?, ?, null)";
+            db.run(sql, [date, serviceTag], function(err){
                 if (err) {
                     return reject(err);
                 }
-                else 
-                    resolve(this.lastID);
+                else{
+                    const result = serviceTag + this.lastID;
+                    resolve(result);
+                }      
             })
         });
     }

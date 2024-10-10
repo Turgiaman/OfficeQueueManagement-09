@@ -3,11 +3,11 @@ import morgan from "morgan";
 import cors from "cors";
 import CounterDao from "./dao/counterDao.mjs";
 import TotemDao from "./dao/totemDao.mjs";
-import { getNextCustomer } from "./dao/officerDao.mjs";
+import OfficerDao from "./dao/officerDao.mjs";
 
 const counterDao = new CounterDao();
 const totemDao = new TotemDao();
-
+const officerDao = new OfficerDao();
 // init express
 const app = new express();
 const port = 3001;
@@ -21,6 +21,7 @@ const corsOptions = {
   credentials: true,
 };
 app.use(cors(corsOptions));
+
 
 // ROUTES
 app.get('/api/counters', async (req, res) => {
@@ -54,7 +55,7 @@ app.get('/api/services',async (req,res)=>{
 
 app.get('/api/next/:counterId',async (req,res)=>{
     try {
-        let next=await getNextCustomer(req.params.counterId);
+        let next=await officerDao.getNextCustomer(req.params.counterId);
         res.status(200).json(next);
     } catch (error) {
         res.status(503).json({ error: error.message });
@@ -63,9 +64,10 @@ app.get('/api/next/:counterId',async (req,res)=>{
 
 app.get('/api/ticket/:service', async(req, res) => {
     try{
-        const ticket = await totemDao.getTicket(req.params.service);
+        const serviceTag = await officerDao.getServiceTag(req.params.service)
+        const ticket = await totemDao.getTicket(serviceTag);
         res.status(200).json(ticket);
-    }catch(error){
+    }catch(error) {
         res.status(503).json({error: error.message});
     }
 })
