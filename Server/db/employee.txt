@@ -1,0 +1,26 @@
+-- database: ./db.sqlite
+
+DROP TABLE employee;
+CREATE TABLE employee (
+    id INTEGER PRIMARY KEY NOT NULL,
+    key_name TEXT UNIQUE NOT NULL,
+    hash_password TEXT NOT NULL,
+    salt TEXT NOT NULL,
+    role TEXT NOT NULL
+);
+
+INSERT INTO employee (key_name, hash_password, salt, role) VALUES ('admin1', '1be432f6653789fc9f105d8eb461ccb7668f89d212437913496eadbbbfcac2ae', '1kbIGKmS8MlB1LlJSJ2KJA73O1332XKH', 'admin');
+INSERT INTO employee (key_name, hash_password, salt, role) VALUES ('admin2', 'f2d1b10d68f5d0dcf63519c81fc94932aecb129616958c823d6c14faba458d7c', '79My1I1ApPx2uI36dy61kyost18MedIF', 'admin');
+INSERT INTO employee (key_name, hash_password, salt, role) VALUES ('admin3', '952963766037f49017c68a4ce80580f2bc3f7cdf52488e3ae1dbeb8626596139', 'xgNpu9U1Ek12DPwJ14OXl8c838kRYUcl', 'admin');
+INSERT INTO employee (key_name, hash_password, salt, role) VALUES ('mana1', '8fc5b8f8b3ffb9a4ad12a8501cd462d3f76b4b7542909a59662a486030571967', 'xgNpu9U1Ek12DPwJ14OXl8c838kRYUcl', 'manager');
+INSERT INTO employee (key_name, hash_password, salt, role) VALUES ('mana2', 'b65c00bc676c7fae8ffebe267185f891a829a2ca700356b36087fb31d728ac63', '6Pg966JdJrRUC8sF6K1oVQ09r1xuFKFH', 'manager');
+INSERT INTO employee (key_name, hash_password, salt, role) VALUES ('emp1', '83fb96c3854d872266b1b240dd207c599811a8f8349ae4a391039eea3f2475cb', 'MJddx8T2r8l6145av241159Ugr3ljqF0', 'employee');
+INSERT INTO employee (key_name, hash_password, salt, role) VALUES ('emp2', 'f9b88d21c7f3b2c34b52f6bc7f084bc58a65be8f7cfb14a8256c97e1c9ff8b80', 'qSQxU1L5CsOr1kr52b11WO97Ye1JEfdR', 'employee');
+INSERT INTO employee (key_name, hash_password, salt, role) VALUES ('emp3', '9b0ad8776b3f1f8eeaedc7312b0d30e1347a51ea8630c6009a3258f8b4ff334c', '5HVa41sY4U82D9A30Z16gAX1F1FIrDT2', 'employee');
+INSERT INTO employee (key_name, hash_password, salt, role) VALUES ('emp4', 'b62aedbae02de9955174545add05baea910759d11bbee71e2445065c95752cec', 'ex8E1vAi87X12V91S813ETOTs1vsHauO', 'employee');
+INSERT INTO employee (key_name, hash_password, salt, role) VALUES ('emp5', '077971862a7db74b9f5fa3a5cb68ae8a428ac3c1cdbea42a7eff6a0af6d8188c', 'kENbCtf1CRziO38QT7zh7R33kAGCl4yh', 'employee');
+INSERT INTO employee (key_name, hash_password, salt, role) VALUES ('emp6', 'c4bf522caf4ff0b1f4aeff387cbebe5ad6882c88016abb4a550eeabed1fc889e', '1J81lbwc857Hr7WyYw71qxAzP8hk7DkL', 'employee');
+INSERT INTO employee (key_name, hash_password, salt, role) VALUES ('emp7', '419868dafe0aad06f35bdf7e7e4591b3d524a38f48a4b8f9108e12502fca28a0', '8PP8Y1F5JzMddJzkYy1f3b61Z19s4scE', 'employee');
+INSERT INTO employee (key_name, hash_password, salt, role) VALUES ('emp8', '3164a8c3c05f20881707e0ac5a0c58edcf15ba27afc59ab472e3425ab3ef83fd', 'yPZnJdgg6xJNkPlwtD99s6X3CI5sVo1m', 'employee');
+INSERT INTO employee (key_name, hash_password, salt, role) VALUES ('emp9', '7c19a950eab865234ed2305f6377d5a9748c610983d9f740cce928353ff6e758', 'lFn3C22py3s1sYAX3q1MBE6qS1z0j9A4', 'employee');
+INSERT INTO employee (key_name, hash_password, salt, role) VALUES ('emp10', 'aed6a19783af824e3b10ede5b3d6e8976e714720506ca5425b27e07279105cb8', '1NfLEod1EWZKSjWEwURYcR3QiPfdYH8Z', 'employee');

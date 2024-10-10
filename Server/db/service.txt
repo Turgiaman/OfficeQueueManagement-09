@@ -1,0 +1,21 @@
+-- database: ./db.sqlite
+
+DROP TABLE service;
+CREATE TABLE service (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name TEXT UNIQUE NOT NULL,
+    tag TEXT UNIQUE NOT NULL,
+    time INTEGER NOT NULL
+);
+INSERT INTO service (name, tag, time) VALUES ('Bank Account', 'BA', 10);
+INSERT INTO service (name, tag, time) VALUES ('Payment card', 'PC', 10);
+INSERT INTO service (name, tag, time) VALUES ('Loan', 'LO', 10);
+INSERT INTO service (name, tag, time) VALUES ('Investment', 'IN', 10);
+INSERT INTO service (name, tag, time) VALUES ('Payment', 'PA', 10);
+INSERT INTO service (name, tag, time) VALUES ('Insurance Policy', 'IP', 10);
+INSERT INTO service (name, tag, time) VALUES ('Shipping', 'SH', 10);
+INSERT INTO service (name, tag, time) VALUES ('Digital Billing', 'DB', 10);
+INSERT INTO service (name, tag, time) VALUES ('Registered Mail', 'RM', 10);
+INSERT INTO service (name, tag, time) VALUES ('Finance & Postal Service', 'FP', 10);
+INSERT INTO service (name, tag, time) VALUES ('Electronic Certificate', 'EC', 10);
+INSERT INTO service (name, tag, time) VALUES ('Other Services', 'OS', 10);

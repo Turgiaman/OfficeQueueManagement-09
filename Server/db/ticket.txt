@@ -1,0 +1,11 @@
+-- database: ./db.sqlite
+
+DROP TABLE ticket;
+CREATE TABLE ticket (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    date TEXT NOT NULL,
+    s_tag TEXT NOT NULL REFERENCES service(tag),
+    c_id INTEGER NOT NULL REFERENCES counter(id)
+);
+INSERT INTO ticket (date, s_tag, c_id) VALUES ('2024-10-10', 'BA', 1);
+INSERT INTO ticket (date, s_tag, c_id) VALUES ('2024-10-10', 'DB', 1);

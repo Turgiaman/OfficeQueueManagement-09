@@ -1,0 +1,12 @@
+-- database: ./db.sqlite
+
+DROP TABLE counter_service;
+CREATE TABLE counter_service (
+    counter_id INTEGER NOT NULL REFERENCES counter(id),
+    service_id INTEGER NOT NULL REFERENCES service(id),
+    PRIMARY KEY (counter_id, service_id)
+);
+INSERT INTO counter_service (counter_id, service_id) VALUES (1, 1);
+INSERT INTO counter_service (counter_id, service_id) VALUES (2, 1);
+INSERT INTO counter_service (counter_id, service_id) VALUES (1, 2);
+INSERT INTO counter_service (counter_id, service_id) VALUES (3, 2);
