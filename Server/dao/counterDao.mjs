@@ -16,6 +16,7 @@ export default function CounterDao(){
             });
         });
     }
+    
     this.getServicesByCounterId = (counterId) => {
         return new Promise((resolve,reject) => {
             const sql = `
