@@ -12,11 +12,20 @@ const getServices=async()=>{
         throw new Error("Internal server error");
       }
 }
-async function getTicket(service) {
-  const ticket = await fetch(`${SERVER_URL}/ticket/${service}`)
-  .then(response => response.json());
-  return ticket;
+
+const getTicket=async(service)=>{
+  const response= await fetch(`${SERVER_URL}/ticket/${service}`,{
+      method:'GET',
+    });
+    const ticket = await response.json();
+    if(response.ok){
+      return ticket;
+    }
+    else{
+      throw new Error("Internal server error");
+    }
 }
+
 const getCounters=async()=>{
   const response= await fetch(`${SERVER_URL}/counters`,{
       method:'GET',

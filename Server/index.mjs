@@ -61,10 +61,10 @@ app.get('/api/next/:counterId',async (req,res)=>{
     }
 })
 
-app.get('api/ticket/:service', async(req, res) => {
+app.get('/api/ticket/:service', async(req, res) => {
     try{
-        result = await totemDao.getTicket(req.params.service);
-        res.status(200).json(result);
+        const ticket = await totemDao.getTicket(req.params.service);
+        res.status(200).json(ticket);
     }catch(error){
         res.status(503).json({error: error.message});
     }

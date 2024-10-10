@@ -20,7 +20,8 @@ export default function TotemDao(){
                 if (err) {
                     return reject(err);
                 }
-                else resolve(this.lastID);
+                else 
+                    resolve(this.lastID);
             })
         });
     }

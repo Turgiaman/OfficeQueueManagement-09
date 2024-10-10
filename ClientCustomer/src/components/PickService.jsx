@@ -7,10 +7,10 @@ const PickServiceComponent = (props)=>{
 
     const [ticket, setTicket] = useState(''); //new line
 
-    const handleServizioClick = (servizio) => {
-      const ticketApi = API.getTicket(servizio.name);
+    const handleServizioClick = async (servizio) => {
+      const ticketApi = await API.getTicket(servizio.name);
       setTicket(ticketApi);
-      alert(`Hai scelto il servizio: ${servizio.name} e il numero del tuo ticket è ${ticket}`);
+      alert(`Hai scelto il servizio: ${servizio.name} e il numero del tuo ticket è ${ticketApi}`);
     };
 
       return (
