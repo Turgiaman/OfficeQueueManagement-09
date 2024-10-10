@@ -8,6 +8,7 @@ import OfficerDao from "./dao/officerDao.mjs";
 const counterDao = new CounterDao();
 const totemDao = new TotemDao();
 const officerDao = new OfficerDao();
+
 // init express
 const app = new express();
 const port = 3001;

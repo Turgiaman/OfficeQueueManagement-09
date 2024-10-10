@@ -1,35 +1,35 @@
 import { db } from "../db/db.mjs";
 import dayjs from "dayjs";
 
-export default function OfficerDao(){
-    this.getNextCustomer = (counterId)=>{
+export default function OfficerDao() {
+    this.getNextCustomer = (counterId) => {
         return new Promise(async (resolve, reject) => {
-            const services=await getCounterServices(counterId);
-            let max=0;
-            let next_service=null;
-            for(let service of services){
-                let count=await getTicketCount(service);
-                if(count>max){
-                    max=count;
-                    next_service=service;
+            const services = await getCounterServices(counterId);
+            let max = 0;
+            let next_service = null;
+            for (let service of services) {
+                let count = await getTicketCount(service);
+                if (count > max) {
+                    max = count;
+                    next_service = service;
                 }
-                else if(count==max && max!=0){
-                    if(await getServiceTime(service)<await getServiceTime(next_service)){
-                        max=count;
-                        next_service=service;
+                else if (count == max && max != 0) {
+                    if (await getServiceTime(service) < await getServiceTime(next_service)) {
+                        max = count;
+                        next_service = service;
                     }
                 }
             }
             if(max==0){
                 resolve(0);
             }
-            else{
-                const sql="SELECT number FROM ticket WHERE service = ? AND served!=1"
-                db.all(sql,[next_service],(err,row)=>{
-                    if (err) { 
+            else {
+                const sql = "SELECT number FROM ticket WHERE service = ? AND served!=1"
+                db.all(sql, [next_service], (err, row) => {
+                    if (err) {
                         return reject(err);
                     }
-                    else{
+                    else {
                         resolve(row[0].number)
                     }
                 })
@@ -55,6 +55,7 @@ export default function OfficerDao(){
             })
           });
     }
+    
     const getServiceFromId=(id)=>{
         return new Promise((resolve, reject) => {
             const sql="SELECT name FROM service WHERE id = ?";
