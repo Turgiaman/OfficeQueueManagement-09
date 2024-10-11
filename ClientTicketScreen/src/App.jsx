@@ -12,9 +12,7 @@ function App() {
     const fetchCounters = async () => {
       try {
         const counters = await API.getCountersTickets();
-
         setCounters(counters);
-        console.log(counters)
 
       } catch (error) {
 
@@ -32,8 +30,8 @@ function App() {
         </Container>
       </>
       }>
+        <Route path="/" element={<CountersTable counters={counters} />}></Route>
       </Route>
-      <Route path="/" element={<CountersTable counters={counters}></CountersTable>}></Route>
     </Routes>
   )
 }

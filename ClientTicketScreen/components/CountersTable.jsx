@@ -11,12 +11,10 @@ const CountersTable = (props)=>{
               <Col key={counter.id} md={4} className="mb-3">
               {counter.id}
               </Col>
-              <Col key={counter.actual_t_id} md={4} className="mb-3">
-              {counter.actual_t_id}
-              </Col>
+              {counter.tag!=null && <Col key={counter.tag} md={4} className="mb-3">{counter.tag}</Col>}
+              {counter.tag==null && <Col key={counter.tag} md={4} className="mb-3">-</Col>}
               </Row>
             ))}
-         
         </Container>
       );
 }
