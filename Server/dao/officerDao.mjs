@@ -24,13 +24,13 @@ export default function OfficerDao() {
                 resolve(0);
             }
             else {
-                const sql = "SELECT number FROM ticket WHERE service = ? AND served!=1"
+                const sql = "SELECT T.id FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?"
                 db.all(sql, [next_service], (err, row) => {
                     if (err) {
                         return reject(err);
                     }
                     else {
-                        resolve(row[0].number)
+                        resolve(row[0].id)
                     }
                 })
             }
@@ -86,7 +86,7 @@ export default function OfficerDao() {
     
     const getTicketCount=(service)=>{
         return new Promise((resolve, reject) => {
-            const sql2="SELECT COUNT(*) AS count FROM ticket WHERE service = ? AND served!=1";
+            const sql2="SELECT COUNT(T.id) AS count FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?";
             db.get(sql2,[service],(err,row)=>{
                 if (err) { 
                     return reject(err);

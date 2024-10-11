@@ -73,6 +73,16 @@ app.get('/api/ticket/:service', async(req, res) => {
     }
 })
 
+app.get('/api/counters/actual_client', async(req, res) => {
+    try{
+        const clients= await counterDao.getTicketFromAllCounters();
+        console.log(clients)
+        res.status(200).json(clients);
+    }catch(error) {
+        res.status(503).json({error: error.message});
+    }
+})
+
 // activate the server
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
