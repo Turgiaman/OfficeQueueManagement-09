@@ -38,9 +38,21 @@ const getCounters=async()=>{
       throw new Error("Internal server error");
     }
 }
+const getCountersTickets=async()=>{
+  const response= await fetch(`${SERVER_URL}/counters/actual_client`,{
+      method:'GET',
+    });
+    const clients = await response.json();
+    if(response.ok){
+      return clients;
+    }
+    else{
+      throw new Error("Internal server error");
+    }
+}
 
 const API = {
-    getServices, getTicket, getCounters
+    getServices, getTicket, getCounters,getCountersTickets
   };
 
   export default API;

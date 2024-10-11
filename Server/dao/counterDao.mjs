@@ -36,7 +36,7 @@ export default function CounterDao(){
 
     this.getTicketFromAllCounters = ()=>{
         return new Promise((resolve,reject) => {
-            const sql = "SELECT T.id as t_id, T.s_tag as tag, C.id as c_id  FROM ticket T, counter C WHERE T.id = actual_t_id"
+            const sql = "SELECT id, actual_t_id  FROM  counter"
             db.all(sql, [], (err,rows)=> {
                 if(err) {
                     return reject(err);
