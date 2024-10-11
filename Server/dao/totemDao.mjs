@@ -16,7 +16,7 @@ export default function TotemDao(){
 
     this.getTicket = (serviceTag)=>{
         return new Promise((resolve, reject) => {
-            const date = dayjs();
+            const date = dayjs().format('YYYY-MM-DD').toString;
             const sql = "INSERT INTO ticket (date, s_tag, c_id) VALUES (?, ?, null)";
             db.run(sql, [date, serviceTag], function(err){
                 if (err) {
