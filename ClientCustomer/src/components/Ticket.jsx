@@ -1,9 +1,9 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Container, Row, Col, Card } from 'react-bootstrap';
+import {Container, Card } from 'react-bootstrap';
 
-const TicketComponent = (props)=>{
+const TicketComponent = (props)=> {
     const navigate=useNavigate();
     useEffect(() => {
         const interval = setInterval(() => {
@@ -11,6 +11,7 @@ const TicketComponent = (props)=>{
         }, 4000);
         return () => clearInterval(interval);
       }, []);
+
       return (
         <Container className="mt-5">
                 <Card className="text-center ">
@@ -22,3 +23,5 @@ const TicketComponent = (props)=>{
         </Container>
       );
 }
+
+export default TicketComponent;

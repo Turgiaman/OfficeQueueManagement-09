@@ -1,16 +1,16 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
 import { Button, Container, Row, Col, Card } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import API from "../../../API/API.mjs";
 
-const PickServiceComponent = (props)=>{
+const PickServiceComponent = (props) => {
+
     const navigate=useNavigate();
-    const [ticket, setTicket] = useState(''); //new line
+
     const handleServizioClick = async (servizio) => {
       const ticketApi = await API.getTicket(servizio.name);
-      setTicket(ticketApi);
-      navigate("/ticket")
+      props.handleTicket(ticketApi);
+      navigate("/ticket");
     };
 
       return (
