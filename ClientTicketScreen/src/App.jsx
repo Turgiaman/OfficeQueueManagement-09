@@ -18,8 +18,11 @@ function App() {
 
       }
     };
-
     fetchCounters();
+    const interval = setInterval(() => {
+      fetchCounters();
+    }, 1000);
+    return () => clearInterval(interval);
   }, []);
   return (
     <Routes>
