@@ -1,9 +1,8 @@
 import {jest, test, expect, afterEach, describe } from "@jest/globals";
-import { Database } from "sqlite3";
-import db from "../../db/db";
+import {db} from "../../db/db.mjs";
 import officerDao from "../../dao/officerDao.mjs";
 
-jest.mock('sqlite3');
+
 jest.setTimeout(100000);
 
 const dao = new officerDao();
@@ -21,7 +20,7 @@ describe('blabla', () => {
             return {};
         });
 
-        await expect(dao.getNextCustomer(1)).resolves.toBe();
+        await expect(dao.getNextCustomer(1)).resolves.toBe(4);
     });
     
 });
