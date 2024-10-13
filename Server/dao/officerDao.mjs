@@ -114,4 +114,22 @@ export default function OfficerDao() {
             })
         });
     }
+
+    this.setCounterTicket=(ticketId, counterId) =>{
+        return new Promise((resolve, reject) => {
+            const sql = `
+            UPDATE ticket
+            SET c_id = ?
+            WHERE id = ?`
+        
+            db.run(sql, [counterId,ticketId], function (err) {
+                if (err){
+                    return reject(err);
+                }
+                else{
+                    resolve(counterId);
+                }
+            });
+        });
+    }
 }

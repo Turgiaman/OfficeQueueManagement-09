@@ -36,10 +36,18 @@ export function ManageCounter() {
         getServices();
     }, [id])
 
-    
+    const handleNext = async () => {
+        console.log(id);
+        const nextTicket = await API.getNextCustomer(id);
+        await API.setCounterTicket(nextTicket,id);
+        if(nextTicket>0)
+            alert(`You are serving the ticket ${nextTicket}`);
+        else
+        alert(`No customers to serve`);
+      };
 
     return (
-        <Container className="d-flex flex-column align-items-center mt-5" style={{ minHeight: '80vh' }}>
+        !loading&&<Container className="d-flex flex-column align-items-center mt-5" style={{ minHeight: '80vh' }}>
             <h1 className="mb-4 text-primary">You are serving at counter {id}</h1>
             {services.length === 0 ? (
                 <p className="text-center flex-grow-1">No services available for this counter.</p>
@@ -58,9 +66,10 @@ export function ManageCounter() {
             <div className="mt-auto text-center">
                 <p className="mt-4">Click the button if you are ready for the next customer</p>
                 <Button 
-                    variant="primary" 
+                    variant="primary"
                     disabled={services.length === 0} 
                     className="mt-2"
+                    onClick={() =>handleNext()}
                 >
                     Next Customer
                 </Button>

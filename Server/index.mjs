@@ -63,6 +63,22 @@ app.get('/api/next/:counterId',async (req,res)=>{
     }
 })
 
+app.put('/api/tickets/:ticketId/counter', async (req, res) => {
+    const ticketId = req.params.ticketId;
+    const { counterId } = req.body;
+
+    if (!counterId) {
+        return res.status(400).json({ error: 'counterId!' });
+    }
+
+    try {
+        let counter = await officerDao.setCounterTicket(ticketId, counterId);
+        res.status(200).json({ message: 'Ticket state updated', counterId: counter });
+    } catch (error) {
+        res.status(503).json({ error: error.message });
+    }
+});
+
 app.get('/api/ticket/:service', async(req, res) => {
     try{
         const serviceTag = await officerDao.getServiceTag(req.params.service)
@@ -81,6 +97,8 @@ app.get('/api/counters/actual_client', async(req, res) => {
         res.status(503).json({error: error.message});
     }
 })
+
+
 
 // activate the server
 app.listen(port, () => {
