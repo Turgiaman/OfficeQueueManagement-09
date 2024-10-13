@@ -1,7 +1,8 @@
 import { useParams, Link} from 'react-router-dom';
 import { Card, Button, Container, Spinner } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
-import API from '../API.mjs'
+import API from '../../../API/API_Officer.mjs'
+
 export function CountersList(props) {
     return (
         <div className="container mt-5">

@@ -20,7 +20,7 @@ export default function OfficerDao() {
                     }
                 }
             }
-            if(max==0){
+            if (max == 0) {
                 resolve(0);
             }
             else {
@@ -34,101 +34,110 @@ export default function OfficerDao() {
                     }
                 })
             }
-          });
-    
+        });
+
     }
-    
-    const getCounterServices=(counterId)=>{
+
+    const getCounterServices = (counterId) => {
         return new Promise((resolve, reject) => {
-            const sql="SELECT service_id FROM counter_service WHERE counter_id = ?"
-            let services=[];
-            db.all(sql,[counterId],async(err,rows)=>{
-                if (err) { 
+            const sql = "SELECT service_id FROM counter_service WHERE counter_id = ?"
+            let services = [];
+            db.all(sql, [counterId], async (err, rows) => {
+                if (err) {
                     return reject(err);
                 }
-                else{
-                   for(let row of rows){   
-                     services.push(await getServiceFromId(row.service_id))
-                   }
-                   resolve(services)
+                else {
+                    for (let row of rows) {
+                        services.push(await getServiceFromId(row.service_id))
+                    }
+                    resolve(services)
                 }
             })
-          });
+        });
     }
-    
-    const getServiceFromId=(id)=>{
+
+    const getServiceFromId = (id) => {
         return new Promise((resolve, reject) => {
-            const sql="SELECT name FROM service WHERE id = ?";
-            db.get(sql,[id],(err,row)=>{
-                if (err) { 
+            const sql = "SELECT name FROM service WHERE id = ?";
+            db.get(sql, [id], (err, row) => {
+                if (err) {
                     return reject(err);
                 }
-                else{
+                else {
                     resolve(row.name)
                 }
             })
         });
     }
-    
-    this.getServiceTag = (service) =>{
+
+    this.getServiceTag = (service) => {
         return new Promise((resolve, reject) => {
-            const sql="SELECT tag FROM service WHERE name = ?";
-            db.get(sql,[service],(err,row)=>{
-                if (err) { 
+            const sql = "SELECT tag FROM service WHERE name = ?";
+            db.get(sql, [service], (err, row) => {
+                if (err) {
                     return reject(err);
                 }
-                else{
+                else {
                     resolve(row.tag);
                 }
             })
         });
     }
-    
-    const getTicketCount=(service)=>{
+
+    const getTicketCount = (service) => {
         return new Promise((resolve, reject) => {
-            const sql2="SELECT COUNT(T.id) AS count FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?";
-            db.get(sql2,[service],(err,row)=>{
-                if (err) { 
+            const sql2 = "SELECT COUNT(T.id) AS count FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?";
+            db.get(sql2, [service], (err, row) => {
+                if (err) {
                     return reject(err);
                 }
-                else if(!row){
+                else if (!row) {
                     resolve(0)
                 }
-                else{
+                else {
                     resolve(row.count)
                 }
             })
         });
     }
-    
-    const getServiceTime=(service)=>{
+
+    const getServiceTime = (service) => {
         return new Promise((resolve, reject) => {
-            const sql2="SELECT time FROM service WHERE name = ? ";
-            db.get(sql2,[service],(err,row)=>{
-                if (err) { 
+            const sql2 = "SELECT time FROM service WHERE name = ? ";
+            db.get(sql2, [service], (err, row) => {
+                if (err) {
                     return reject(err);
                 }
-                else{
+                else {
                     resolve(row.time)
                 }
             })
         });
     }
 
-    this.setCounterTicket=(ticketId, counterId) =>{
+    this.setCounterTicket = (ticketId, counterId) => {
         return new Promise((resolve, reject) => {
-            const sql = `
+            const sql1 = `
             UPDATE ticket
             SET c_id = ?
             WHERE id = ?`
-        
-            db.run(sql, [counterId,ticketId], function (err) {
-                if (err){
+
+            const sql2 = `
+            UPDATE counter
+            SET actual_t_id = ?
+            WHERE id = ?`
+
+            db.run(sql1, [counterId, ticketId], function (err) {
+                if (err) {
                     return reject(err);
                 }
-                else{
+                db.run(sql2, [ticketId, counterId], function (err) {
+                    if (err) {
+                        return reject(err);
+                    }
                     resolve(counterId);
-                }
+                });
+
             });
         });
     }
