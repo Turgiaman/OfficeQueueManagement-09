@@ -44,10 +44,10 @@ export default function CounterDao() {
                     let vet = [];
                     for (let element of rows) {
                         if (element.actual_t_id != null) {
-                            vet.push({ id: element.id, tag: await this.getTicketTag(element.id), min: await this.getTimePerTicketInQueue(element.actual_t_id) })
+                            vet.push({ id: element.id, tag: await this.getTicketTag(element.actual_t_id), num: await this.getTimePerTicketInQueue(element.actual_t_id) })
                         }
                         else {
-                            vet.push({ id: element.id, tag: null, min: null })
+                            vet.push({ id: element.id, tag: null, num: null })
                         }
                     }
                     resolve(vet);
@@ -70,13 +70,13 @@ export default function CounterDao() {
     }
     this.getTimePerTicketInQueue = async (t_id) => {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT SUM(s.time) as waitingTime, s.tag
+            const sql = `SELECT COUNT(*) as ticketInQueue, s.tag
                          FROM ticket t, service s
                          WHERE t.s_tag = s.tag
                          AND t.c_id IS NULL
                          AND s.tag = (SELECT s_tag
                                       FROM ticket
-                                      WHERE c_id = ?)`;
+                                      WHERE id = ?)`;
             db.get(sql, [t_id], (err, row) => {
                 if (err) {
                     return reject(err);

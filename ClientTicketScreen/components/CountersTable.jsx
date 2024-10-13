@@ -9,7 +9,7 @@ const CountersTable = (props) => {
       <Row>
         <Col style={{ fontSize: '25px' }} className="border p-3 text-center text-primary" xs={4}><strong>Counter</strong></Col>
         <Col style={{ fontSize: '25px' }} className="border p-3 text-center text-primary" xs={4}><strong>Ticket</strong></Col>
-        <Col style={{ fontSize: '25px' }} className="border p-3 text-center text-primary" xs={4}><strong>Approximate time left</strong></Col>
+        <Col style={{ fontSize: '25px' }} className="border p-3 text-center text-primary" xs={4}><strong>Remaining ticket in queue</strong></Col>
       </Row>
       {props.counters.map((counter) => (
         <Row key={counter.id}>
@@ -17,8 +17,8 @@ const CountersTable = (props) => {
             {counter.id}
           </Col>
           {counter.tag != null && <Col key={counter.tag} md={4} className="border p-3 text-center">{counter.tag}</Col>}
-          {counter.tag == null && <Col key={counter.tag} md={4} className="border p-3 text-center">-</Col>}
-          {counter.tag != null && <Col key={counter.min.waitingTime} md={4} className="border p-3 text-center">{counter.min.waitingTime}</Col>}
+          {counter.tag == null && <Col key={counter.tag} md={4} className="border p-3 text-center">Counter closed</Col>}
+          {counter.tag != null && <Col key={counter.num.ticketInQueue} md={4} className="border p-3 text-center">{counter.num.ticketInQueue}</Col>}
         </Row>
       ))}
     </Container>
