@@ -40,9 +40,10 @@ export function ManageCounter() {
     const handleNext = async () => {
         console.log(id);
         const nextTicket = await API.getNextCustomer(id);
-        await API.setCounterTicket(nextTicket,id);
-        if(nextTicket>0)
-            alert(`You are serving the ticket ${nextTicket}`);
+        if(nextTicket.id>0){
+            await API.setCounterTicket(nextTicket.id,id);
+            alert(`You are serving the ticket ${nextTicket.tag+nextTicket.id}`);
+        }
         else
         alert(`No customers to serve`);
       };

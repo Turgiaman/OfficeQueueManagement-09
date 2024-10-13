@@ -21,16 +21,16 @@ export default function OfficerDao() {
                 }
             }
             if (max == 0) {
-                resolve(0);
+                resolve({tag:null,id:0});
             }
             else {
-                const sql = "SELECT T.id FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?"
+                const sql = "SELECT T.id, T.s_tag FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?"
                 db.all(sql, [next_service], (err, row) => {
                     if (err) {
                         return reject(err);
                     }
                     else {
-                        resolve(row[0].id)
+                        resolve({tag:row[0].s_tag,id:row[0].id})
                     }
                 })
             }
