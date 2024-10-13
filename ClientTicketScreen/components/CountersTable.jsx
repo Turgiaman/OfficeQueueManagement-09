@@ -18,7 +18,7 @@ const CountersTable = (props) => {
           </Col>
           {counter.tag != null && <Col key={counter.tag} md={4} className="border p-3 text-center">{counter.tag}</Col>}
           {counter.tag == null && <Col key={counter.tag} md={4} className="border p-3 text-center">-</Col>}
-          {counter.tag != null && <Col key={counter.min.waitingTime} md={4} className="border p-3 text-center">{counter.min.tag}</Col>}
+          {counter.tag != null && <Col key={counter.min.waitingTime} md={4} className="border p-3 text-center">{counter.min.waitingTime}</Col>}
         </Row>
       ))}
     </Container>
