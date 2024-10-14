@@ -31,13 +31,38 @@ describe('Class TotemDao', () => {
     describe('Test getTicket', ()=>{
         test("It should return the ticket tag", async() => {
             const dbRunMock=jest.spyOn(db,"run").mockImplementation((sql,params,callback) => {
-                this.lastID = 18;
                 callback(null);
+                
+            })
+            const dbGetMock=jest.spyOn(db,"get").mockImplementation((sql,params,callback) => {
+                callback(null,{max:18});
                 
             })
             const result = await dao.getTicket("DB");
             expect(result).toStrictEqual("DB18");
             dbRunMock.mockRestore();
+            dbGetMock.mockRestore();
+        });
+        test("It should return error", async() => {
+            const dbRunMock=jest.spyOn(db,"run").mockImplementation((sql,params,callback) => {
+                callback(new Error('Database Error'));
+                
+            })
+            await expect(dao.getTicket("DB")).rejects.toThrow('Database Error');
+            dbRunMock.mockRestore();
+        });
+        test("It should return the ticket tag", async() => {
+            const dbRunMock=jest.spyOn(db,"run").mockImplementation((sql,params,callback) => {
+                callback(null);
+                
+            })
+            const dbGetMock=jest.spyOn(db,"get").mockImplementation((sql,params,callback) => {
+                callback(new Error('Database Error'));
+                
+            })
+            await expect(dao.getTicket("DB")).rejects.toThrow('Database Error');
+            dbRunMock.mockRestore();
+            dbGetMock.mockRestore();
         });
     })
     
