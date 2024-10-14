@@ -7,10 +7,10 @@
     "sqlite3": "^5.1.7"
   },
   "type": "module",
-  "devDependencies": {
-    "jest": "^29.7.0"
-  },
   "scripts": {
     "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }

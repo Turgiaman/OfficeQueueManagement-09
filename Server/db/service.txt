@@ -8,7 +8,7 @@ CREATE TABLE service (
     time INTEGER NOT NULL
 );
 INSERT INTO service (name, tag, time) VALUES ('Bank Account', 'BA', 10);
-INSERT INTO service (name, tag, time) VALUES ('Payment card', 'PC', 10);
+INSERT INTO service (name, tag, time) VALUES ('Payment Card', 'PC', 10);
 INSERT INTO service (name, tag, time) VALUES ('Loan', 'LO', 10);
 INSERT INTO service (name, tag, time) VALUES ('Investment', 'IN', 10);
 INSERT INTO service (name, tag, time) VALUES ('Payment', 'PA', 10);
