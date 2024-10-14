@@ -2,8 +2,10 @@ import { db } from "../db/db.mjs";
 import dayjs from "dayjs";
 
 export default function OfficerDao() {
+    /*
     this.getNextCustomer = (counterId) => {
         return new Promise(async (resolve, reject) => {
+            
             const services = await getCounterServices(counterId);
             let max = 0;
             let next_service = null;
@@ -36,26 +38,35 @@ export default function OfficerDao() {
             }
         });
     }
+    */
 
-    const getCounterServices = (counterId) => {
+    this.getNextCustomer = (nextService) => {
+        return new Promise((resolve, reject) => {
+            const sql = "SELECT T.id, T.s_tag FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?";
+            db.all(sql, [nextService], (err, row) => {
+                if(err)
+                    reject(err);
+                else
+                resolve({tag: row[0].s_tag, id: row[0].id});
+            })
+        })
+    }
+    this.getCounterServices = (counterId) => {
         return new Promise((resolve, reject) => {
             const sql = "SELECT service_id FROM counter_service WHERE counter_id = ?"
-            let services = [];
             db.all(sql, [counterId], async (err, rows) => {
                 if (err) {
                     return reject(err);
                 }
                 else {
-                    for (let row of rows) {
-                        services.push(await getServiceFromId(row.service_id))
-                    }
-                    resolve(services)
+                    const serviceIds = rows.map(row => row.service_id);
+                    resolve(serviceIds);
                 }
             })
         });
     }
 
-    const getServiceFromId = (id) => {
+    this.getServiceFromId = (id) => {
         return new Promise((resolve, reject) => {
             const sql = "SELECT name FROM service WHERE id = ?";
             db.get(sql, [id], (err, row) => {
@@ -63,13 +74,13 @@ export default function OfficerDao() {
                     return reject(err);
                 }
                 else {
-                    resolve(row.name)
+                    resolve(row.name);
                 }
             })
         });
     }
 
-    const getTicketCount = (service) => {
+    this.getTicketCount = (service) => {
         return new Promise((resolve, reject) => {
             const sql2 = "SELECT COUNT(T.id) AS count FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?";
             db.get(sql2, [service], (err, row) => {
@@ -80,13 +91,14 @@ export default function OfficerDao() {
                     resolve(0)
                 }
                 else {
+                    console.log(row.count);
                     resolve(row.count)
                 }
             })
         });
     }
 
-    const getServiceTime = (service) => {
+    this.getServiceTime = (service) => {
         return new Promise((resolve, reject) => {
             const sql2 = "SELECT time FROM service WHERE name = ? ";
             db.get(sql2, [service], (err, row) => {

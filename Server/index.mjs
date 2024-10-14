@@ -56,7 +56,30 @@ app.get('/api/services',async (req,res)=>{
 
 app.get('/api/next/:counterId',async (req,res)=>{
     try {
-        let next=await officerDao.getNextCustomer(req.params.counterId);
+        let next = {tag: null, id: 0};
+        let services = [];
+        
+        const serviceIds = await officerDao.getCounterServices(req.params.counterId);
+        for(let serviceId of serviceIds)
+            services.push(await officerDao.getServiceFromId(serviceId));
+
+        let max = 0;
+        let next_service = null;
+        for (let service of services) {
+            let count = await officerDao.getTicketCount(service);
+            if (count > max) {
+                max = count;
+                next_service = service;
+            }
+            else if (count == max && max != 0) {
+                if (await officerDao.getServiceTime(service) < await officerDao.getServiceTime(next_service)) {
+                    max = count;
+                    next_service = service;
+                }
+            }
+        }
+        if(max)
+            next = await officerDao.getNextCustomer(next_service);
         res.status(200).json(next);
     } catch (error) {
         res.status(503).json({ error: error.message });
