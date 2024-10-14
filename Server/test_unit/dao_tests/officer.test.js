@@ -20,7 +20,7 @@ describe('blabla', () => {
             return {};
         });
 
-        await expect(dao.getNextCustomer(1)).resolves.toBe(4);
+        await expect(dao.getNextCustomer(1)).resolves.toStrictEqual({id:8,tag:"BA"});
     });
     
 });
