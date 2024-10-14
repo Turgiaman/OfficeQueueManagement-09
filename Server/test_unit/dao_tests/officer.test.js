@@ -32,8 +32,18 @@ describe("Class OfficerDao, function getServiceTag", () => {
 });
 
 describe("Class OfficerDao, function setCounterTicket", () => {
-    test("test setCounterTicket", async() => {
+	test("test getServiceTag", async() => {
+        const mockRow = 'BA';
+        const mockService = 'Bank Account';
 
+        const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+            callback(null, mockRow);
+        });
+
+        const result = await dao.getServiceTag(mockService);
+        expect(result).toBe(mockRow);
+        expect(dbGetMock).toHaveBeenCalledTimes(1);
+        expect(dbGetMock).toBeCalledWith("SELECT tag FROM service WHERE name = ?", [mockService]);
     });
 });
 
