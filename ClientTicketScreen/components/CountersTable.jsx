@@ -1,27 +1,35 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
-import { Button, Container, Row, Col, Card } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 
 const CountersTable = (props) => {
   return (
     <Container className="mt-5">
       <h1 className="text-center text-primary mb-4">SERVING CLIENT</h1>
-      <Row>
-        <Col style={{ fontSize: '25px' }} className="border p-3 text-center text-primary" xs={4}><strong>Counter</strong></Col>
-        <Col style={{ fontSize: '25px' }} className="border p-3 text-center text-primary" xs={4}><strong>Ticket</strong></Col>
-        <Col style={{ fontSize: '25px' }} className="border p-3 text-center text-primary" xs={4}><strong>Remaining ticket in queue</strong></Col>
+      <Row className="mb-3">
+        <Col style={{ fontSize: '25px' }} className="border border-primary rounded p-3 text-center text-primary bg-light shadow">
+          <strong>Counter</strong>
+        </Col>
+        <Col style={{ fontSize: '25px' }} className="border border-primary rounded p-3 text-center text-primary bg-light shadow">
+          <strong>Ticket</strong>
+        </Col>
+        <Col style={{ fontSize: '25px' }} className="border border-primary rounded p-3 text-center text-primary bg-light shadow">
+          <strong>Remaining Tickets in Queue</strong>
+        </Col>
       </Row>
       {props.counters.map((counter) => (
-        <Row key={counter.id}>
-          <Col key={counter.id} md={4} className="border p-3 text-center">
-            {counter.id}
+        <Row key={counter.id} className="mb-2">
+          <Col md={4} className="border border-secondary rounded p-3 text-center bg-white shadow">
+            <strong>Counter {counter.id}</strong>
           </Col>
-          {counter.tag != null && <Col key={counter.tag} md={4} className="border p-3 text-center">{counter.tag}</Col>}
-          {counter.tag == null && <Col key={counter.tag} md={4} className="border p-3 text-center">Counter closed</Col>}
-          {counter.tag != null && <Col key={counter.num.ticketInQueue} md={4} className="border p-3 text-center">{counter.num.ticketInQueue}</Col>}
+          <Col md={4} className={`border border-secondary rounded p-3 text-center bg-white shadow ${counter.tag ? 'text-success' : 'text-danger'}`}>
+            {counter.tag != null ? counter.tag : 'Counter Closed'}
+          </Col>
+          <Col md={4} className="border border-secondary rounded p-3 text-center bg-white shadow">
+            {counter.tag != null ? counter.num.ticketInQueue : '-'}
+          </Col>
         </Row>
       ))}
     </Container>
   );
-}
+};
+
 export default CountersTable;
