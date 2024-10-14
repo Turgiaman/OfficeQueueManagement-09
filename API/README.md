@@ -105,7 +105,7 @@
     ```
     - Error responses: 503 Service Unavailable (service error)
 
- - GET /api/:counterId/next
+ - GET /api/counters/:counterId/next
     - Description: Retrieve the next customer in line for the specified counter ID.
     - Request body: None
     - Request query parameter: None

@@ -21,7 +21,7 @@ const getServicesByCounterId = async (counterId) => {
 }
 
 const getNextCustomer = async (counterId) => {
-  const response = await fetch(SERVER_URL + `/api/${counterId}/next`, {
+  const response = await fetch(SERVER_URL + `/api/counters/${counterId}/next`, {
     method: 'GET',
   });
   const nextCustomer = await response.json();

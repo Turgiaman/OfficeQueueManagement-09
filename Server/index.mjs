@@ -54,7 +54,7 @@ app.get('/api/services',async (req,res)=>{
     }
 })
 
-app.get('/api/:counterId/next',async (req,res)=>{
+app.get('/api/counters/:counterId/next',async (req,res)=>{
     try {
         let next = {tag: null, id: 0};
         let services = [];
