@@ -35,7 +35,6 @@ export default function OfficerDao() {
                 })
             }
         });
-
     }
 
     const getCounterServices = (counterId) => {
@@ -70,20 +69,6 @@ export default function OfficerDao() {
         });
     }
 
-    this.getServiceTag = (service) => {
-        return new Promise((resolve, reject) => {
-            const sql = "SELECT tag FROM service WHERE name = ?";
-            db.get(sql, [service], (err, row) => {
-                if (err) {
-                    return reject(err);
-                }
-                else {
-                    resolve(row.tag);
-                }
-            })
-        });
-    }
-
     const getTicketCount = (service) => {
         return new Promise((resolve, reject) => {
             const sql2 = "SELECT COUNT(T.id) AS count FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?";
@@ -110,6 +95,20 @@ export default function OfficerDao() {
                 }
                 else {
                     resolve(row.time)
+                }
+            })
+        });
+    }
+
+    this.getServiceTag = (service) => {
+        return new Promise((resolve, reject) => {
+            const sql = "SELECT tag FROM service WHERE name = ?";
+            db.get(sql, [service], (err, row) => {
+                if (err) {
+                    return reject(err);
+                }
+                else {
+                    resolve(row.tag);
                 }
             })
         });
