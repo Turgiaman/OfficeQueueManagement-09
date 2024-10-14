@@ -105,7 +105,7 @@
     ```
     - Error responses: 503 Service Unavailable (service error)
 
- - GET /api/next/:counterId
+ - GET /api/:counterId/next
     - Description: Retrieve the next customer in line for the specified counter ID.
     - Request body: None
     - Request query parameter: None
@@ -113,7 +113,7 @@
     - Response body: the id of the ticket to serve
     - Error responses: 503 Service Unavailable (service error)
 
-- PUT /api/tickets/:ticketId/counter
+- PUT /api/tickets/:ticketId
     - Description: Update the counter assignment for a specific ticket.
     - Request body: An object containing the counter ID.
         ``` json
@@ -132,9 +132,44 @@
         ```
     - Error responses: 503 Service Unavailable (service error)
 
+ - GET /api/officers
+    - Description: Retrieve the list of all officers (role: employee).
+    - Request body: None
+    - Request query parameter: None
+    - Response: 200 OK (success)
+    - Response body: An array of employee ( id + key_name)
+        ``` json
+        [
+            {
+                "id": 6,
+                "key_name": "emp1"
+            },
+            {
+                "id": 7,
+                "key_name": "emp2"
+            },
+        ]
+        ```
+    - Error responses: 503 Service Unavailable (service error)
 
-
-
+- PUT /api/counters/:counterId
+    - Description: Update the employee who is working for the counter.
+    - Request body: An object containing the counter ID.
+        ``` json
+        {
+        "employeeId": 7
+        }
+        ```
+    - Request query parameter: None
+    - Response: 200 OK (success)
+    - Response body: Confirmation message and the assigned counter ID.
+        ``` json
+        {
+            "message": "Counter state updated",
+            "counterId": "1"
+        }
+        ```
+    - Error responses: 503 Service Unavailable (service error)
 
 
 

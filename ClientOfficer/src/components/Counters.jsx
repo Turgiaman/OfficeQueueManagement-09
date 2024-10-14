@@ -1,9 +1,19 @@
 import { useParams, Link} from 'react-router-dom';
 import { Card, Button, Container, Spinner } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
-import API from '../../../API/API_Officer.mjs'
+import API from '../../../API/API_Officer.mjs';
+import EmployeeSelectionModal from './OfficerSelection';
 
 export function CountersList(props) {
+
+    const [showModal, setShowModal] = useState(false);
+    const [selectedCounter, setSelectedCounter] = useState(null);
+
+    const handleOpenModal = (counterId) => {
+        setSelectedCounter(counterId);
+        setShowModal(true);
+    };
+
     return (
         <div className="container mt-5">
             <h1 className="text-center text-primary mb-4">Select a counter to manage the queue:</h1>
@@ -12,13 +22,19 @@ export function CountersList(props) {
                     <Card className="text-center mb-3" key={counter.id} style={{ width: '100%', maxWidth: '400px' }}>
                         <Card.Body>
                             <Card.Title>Counter {counter.id}</Card.Title>
-                            <Link to={`/counter/${counter.id}`}>
-                                <Button variant="primary">Manage Counter</Button>
-                            </Link>
+                            <Button variant="primary" onClick={() => handleOpenModal(counter.id)}>Manage Counter</Button>
                         </Card.Body>
                     </Card>
+
+                    
                 ))}
             </div>
+            <EmployeeSelectionModal 
+                show={showModal} 
+                setShow={setShowModal}
+                counterId={selectedCounter}
+                setCounterId={setSelectedCounter}
+            />
         </div>
     );
 }

@@ -54,7 +54,7 @@ app.get('/api/services',async (req,res)=>{
     }
 })
 
-app.get('/api/next/:counterId',async (req,res)=>{
+app.get('/api/:counterId/next',async (req,res)=>{
     try {
         let next = {tag: null, id: 0};
         let services = [];
@@ -86,7 +86,7 @@ app.get('/api/next/:counterId',async (req,res)=>{
     }
 })
 
-app.put('/api/tickets/:ticketId/counter', async (req, res) => {
+app.put('/api/tickets/:ticketId', async (req, res) => {
     const ticketId = req.params.ticketId;
     const { counterId } = req.body;
 
@@ -120,6 +120,31 @@ app.get('/api/counters/actual_client', async(req, res) => {
         res.status(503).json({error: error.message});
     }
 })
+
+app.get('/api/officers', async(req, res) => {
+    try{
+        const clients= await officerDao.getOfficers();
+        res.status(200).json(clients);
+    }catch(error) {
+        res.status(503).json({error: error.message});
+    }
+})
+
+app.put('/api/counters/:counterId', async (req, res) => {
+    const counterId = req.params.counterId;
+    const { employeeId } = req.body;
+
+    if (!employeeId) {
+        return res.status(400).json({ error: 'employeeId missing!' });
+    }
+
+    try {
+        let counter = await officerDao.setOfficerCounter(employeeId, counterId);
+        res.status(200).json({ message: 'Counter state updated', counterId: counter });
+    } catch (error) {
+        res.status(503).json({ error: error.message });
+    }
+});
 
 
 

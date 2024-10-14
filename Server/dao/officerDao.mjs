@@ -113,4 +113,39 @@ export default function OfficerDao() {
             });
         });
     }
+
+    this.getOfficers = () => {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT id, key_name
+                FROM employee
+                WHERE role = ?`;
+            
+            db.all(sql, ['employee'], (err, rows) => {
+                if (err) {
+                    return reject(err);
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+    };
+
+    this.setOfficerCounter = (employeeId,counterId) => {
+        return new Promise((resolve, reject) => {
+            const sql = `
+            UPDATE counter
+            SET e_id = ?
+            WHERE id = ?`;
+
+            db.run(sql, [employeeId, counterId], function (err) {
+                if (err) {
+                    return reject(err);
+                }
+                else {
+                    resolve(counterId);
+                }
+            });
+        });
+    }
 }

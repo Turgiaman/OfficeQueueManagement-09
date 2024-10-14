@@ -21,7 +21,7 @@ const getServicesByCounterId = async (counterId) => {
 }
 
 const getNextCustomer = async (counterId) => {
-  const response = await fetch(SERVER_URL + `/api/next/${counterId}`, {
+  const response = await fetch(SERVER_URL + `/api/${counterId}/next`, {
     method: 'GET',
   });
   const nextCustomer = await response.json();
@@ -35,7 +35,7 @@ const getNextCustomer = async (counterId) => {
 
 const setCounterTicket = async (ticketId, counterId) => {
 
-  const res = await fetch(SERVER_URL + `/api/tickets/${ticketId}/counter`, {
+  const res = await fetch(SERVER_URL + `/api/tickets/${ticketId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -53,5 +53,38 @@ const setCounterTicket = async (ticketId, counterId) => {
 
 };
 
-const API = { getCounters, getServicesByCounterId, getNextCustomer, setCounterTicket }
+const getOfficers = async (counterId) => {
+  const response = await fetch(SERVER_URL + `/api/officers`, {
+    method: 'GET',
+  });
+  const officers = await response.json();
+  if (response.ok) {
+    return officers;
+  }
+  else {
+    throw new Error("Internal server error");
+  }
+}
+
+const setOfficerCounter = async (employeeId, counterId) => {
+
+  const res = await fetch(SERVER_URL + `/api/counters/${counterId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ employeeId }),
+  });
+
+  if (res.ok) {
+    const employeeCounter = await res.json();
+    return employeeCounter;
+  }
+  else {
+    throw new Error("Internal server error");
+  }
+
+};
+
+const API = { getCounters, getServicesByCounterId, getNextCustomer, setCounterTicket, getOfficers, setOfficerCounter }
 export default API;
