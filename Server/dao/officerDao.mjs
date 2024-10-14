@@ -1,45 +1,6 @@
 import { db } from "../db/db.mjs";
-import dayjs from "dayjs";
 
 export default function OfficerDao() {
-    /*
-    this.getNextCustomer = (counterId) => {
-        return new Promise(async (resolve, reject) => {
-            
-            const services = await getCounterServices(counterId);
-            let max = 0;
-            let next_service = null;
-            for (let service of services) {
-                let count = await getTicketCount(service);
-                if (count > max) {
-                    max = count;
-                    next_service = service;
-                }
-                else if (count == max && max != 0) {
-                    if (await getServiceTime(service) < await getServiceTime(next_service)) {
-                        max = count;
-                        next_service = service;
-                    }
-                }
-            }
-            if (max == 0) {
-                resolve({tag:null,id:0});
-            }
-            else {
-                const sql = "SELECT T.id, T.s_tag FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?"
-                db.all(sql, [next_service], (err, row) => {
-                    if (err) {
-                        return reject(err);
-                    }
-                    else {
-                        resolve({tag:row[0].s_tag,id:row[0].id})
-                    }
-                })
-            }
-        });
-    }
-    */
-
     this.getNextCustomer = (nextService) => {
         return new Promise((resolve, reject) => {
             const sql = "SELECT T.id, T.s_tag FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?";
@@ -51,6 +12,7 @@ export default function OfficerDao() {
             })
         })
     }
+
     this.getCounterServices = (counterId) => {
         return new Promise((resolve, reject) => {
             const sql = "SELECT service_id FROM counter_service WHERE counter_id = ?"
@@ -91,7 +53,6 @@ export default function OfficerDao() {
                     resolve(0)
                 }
                 else {
-                    console.log(row.count);
                     resolve(row.count)
                 }
             })

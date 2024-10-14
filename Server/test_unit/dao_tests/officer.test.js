@@ -11,53 +11,74 @@ afterEach(() => {
     jest.clearAllMocks();
 });
 
-describe('Class OfficerDao, function getNextCustomer', () => {
+describe("Class OfficerDao, functions for API /api/next/:counterId", () => {
 
-    test("blabla", async() => {
-        const mockCounter = 1; //input
+    test("test getNextCustomer", async() => {
+        const mockNextService = 'Service1';
+        const mockTicket = {tag: 's', id: '1'};
 
-        //mock getCounterServices
-        const mockServices = ['service1', 'service2']; 
-        db.all.mockImplementationOnce((sql, params, callback) => {
-            callback(null, [{service_id: 1}, {service_id: 2}]);
-        })
-
-        //mock serviceFromId (chiamata da getCounterServices) 
-        db.get.mockImplementationOnce((sql, params, callback) => {
-            callback(null, { name: 'service1' });
-        }).mockImplementationOnce((sql, params, callback) => {
-            callback(null, { name: 'service2' });
+        const dbAllMock = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+            callback(null, mockTicket);
         });
 
-        //mock getTicketCount
-        db.get.mockImplementationOnce((sql, params, callback) => {
-            callback(null, { count: 5 });  // count for service1
-        }).mockImplementationOnce((sql, params, callback) => {
-            callback(null, { count: 3 });  // count for service2
-        });
-
-        //mock getServiceTime
-        db.get.mockImplementationOnce((sql, params, callback) => {
-            callback(null, { time: 10 });  // time for service1
-        }).mockImplementationOnce((sql, params, callback) => {
-            callback(null, { time: 20 });  // time for service2
-        });
-
-        //query
-        const mockRow = [{id: 123, s_tag: 'abc'}];
-        //NOTA: non dovrebbe essere db.get??
-        const dbAllMock=jest.spyOn(db,"all").mockImplementation((sql,params,callback) => {
-            callback(null, mockRow);
-        });
-
-        const res = await dao.getNextCustomer(mockCounter);
-        expect(res).toBe(mockRow);
-        expect(dbAllMock).toBeCalledTimes(1);
+        const result = await dao.getNextCustomer(mockNextService);
+        expect(result).toBe(mockTicket);
+        expect(dbAllMock).toHaveBeenCalledTimes(1);
+        expect(dbAllMock).toBeCalledWith("SELECT T.id, T.s_tag FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?", [mockService]);
     });
-    
-});
 
-describe("Class OfficerDao, function getServiceTag", () => {
+    test("test getCounterServices", async() => {
+        const mockCounterId = 1;
+        const mockServices = [1, 2];
+        const dbAllMock = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+            callback(null, mockServices);
+        });
+
+        const result = await dao.getCounterServices(mockCounterId);
+        expect(result).toBe(mockServices);
+        expect(dbAllMock).toHaveBeenCalledTimes(1);
+        expect(dbAllMock).toBeCalledWith("SELECT service_id FROM counter_service WHERE counter_id = ?", [mockCounterId]);
+    });
+
+    test("test getServiceFromId", async() => {
+        const mockServiceId = 1;
+        const mockService = 'service1';
+        const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+            callback(null, mockService);
+        });
+
+        const result = await dao.getServiceFromId(mockServiceId);
+        expect(result).toBe(mockService);
+        expect(dbGetMock).toHaveBeenCalledTimes(1);
+        expect(dbGetMock).toBeCalledWith("SELECT name FROM service WHERE id = ?", [mockServiceId]);
+    });
+
+    test("test getTicketCount", async() => {
+        const mockService = 'service1';
+        const mockCount = 5;
+        const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+            callback(null, mockCount);
+        });
+
+        const result = await dao.getServiceFromId(mockService);
+        expect(result).toBe(mockCount);
+        expect(dbGetMock).toHaveBeenCalledTimes(1);
+        expect(dbGetMock).toBeCalledWith("SELECT COUNT(T.id) AS count FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?", [mockService]);
+    });
+
+    test("test getServiceTime", async() => {
+        const mockService = 'service1';
+        const mockTime = 10;
+        const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+            callback(null, mockTime);
+        });
+
+        const result = await dao.getServiceTime(mockService);
+        expect(result).toBe(mockTime);
+        expect(dbGetMock).toHaveBeenCalledTimes(1);
+        expect(dbGetMock).toBeCalledWith("SELECT time FROM service WHERE name = ? ", [mockService]);
+    });
+
     test("test getServiceTag", async() => {
         const mockRow = 'BA';
         const mockService = 'Bank Account';
@@ -73,9 +94,21 @@ describe("Class OfficerDao, function getServiceTag", () => {
     });
 });
 
-describe("Class OfficerDao, function setCounterTicket", () => {
-	test("test setCounterTicket", async() => {
-        
-    });
-});
+describe("Class OfficerDao, functions for API /api/tickets/:ticketId/counter", () => {
+    test("test setCounterTicket", async() => {
+        const mockTicketId = 3;
+        const mockCounterId = 1;
 
+        const dbRunMock1 = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+            callback(null);
+        });
+        const dbRunMock2 = jest.spyOn(db, "run").mockImplementation((sql, params, callback) => {
+            callback(null, mockCounterId);
+        });
+
+        const result = await dao.setCounterTicket(mockTicketId, mockCounterId);
+        expect(result).toBe(mockCounterId);
+        expect(dbRunMock1).toHaveBeenCalledTimes(1);
+        expect(dbRunMock2).toHaveBeenCalledTimes(1);
+    });
+})
