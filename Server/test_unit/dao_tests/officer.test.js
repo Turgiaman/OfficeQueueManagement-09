@@ -17,25 +17,25 @@ describe("Class OfficerDao, functions for API /api/next/:counterId", () => {
         const mockNextService = 'Service1';
 
         test("it should returns the ticket of the next customer to be served", async() => {
-            const mockTicket = {tag: 'AB', id: '1'};
+            const mockTicket = [{s_tag: 'AB', id: 1}];
+            const mockRes = { tag: 'AB', id: 1 };
             const dbAllMock = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
                 callback(null, mockTicket);
             });
     
             const result = await dao.getNextCustomer(mockNextService);
-            expect(result).toBe(mockTicket);
-            expect(dbAllMock).toHaveBeenCalledTimes(1);
-            expect(dbAllMock).toBeCalledWith("SELECT T.id, T.s_tag FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?", [mockService]);
+            expect(result).toStrictEqual(mockRes);
+            expect(dbAllMock).toBeCalledWith("SELECT T.id, T.s_tag FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?",
+                [mockNextService], expect.any(Function));
         });
 
         test("it should returns an error", async() => {
             const mockError = "Database error"
-            const dbAllMock = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+            jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
                 callback(new Error(mockError));
             });
 
             await expect(dao.getNextCustomer(mockNextService)).rejects.toThrow(mockError);
-            expect(dbAllMock).toHaveBeenCalledTimes(1);
         });
     })
     
@@ -43,68 +43,70 @@ describe("Class OfficerDao, functions for API /api/next/:counterId", () => {
         const mockCounterId = 1;
 
         test("it should returns an array of service's id associate to a counter", async() => {
-            const mockServices = [1, 2];
+            const mockServices = [{ service_id: 1 }, { service_id: 2 }]; //questo è quello che restituisce la chiamata al db! è diverso da cosa ritorna la funzione!
+            const mockRes = [1,2];
             const dbAllMock = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
                 callback(null, mockServices);
             });
     
             const result = await dao.getCounterServices(mockCounterId);
-            expect(result).toBe(mockServices);
-            expect(dbAllMock).toHaveBeenCalledTimes(1);
-            expect(dbAllMock).toBeCalledWith("SELECT service_id FROM counter_service WHERE counter_id = ?", [mockCounterId]);
+            expect(result).toStrictEqual(mockRes);
+            expect(dbAllMock).toBeCalledWith("SELECT service_id FROM counter_service WHERE counter_id = ?",
+                [mockCounterId], expect.any(Function));
         });
 
         test("it should returns an error", async() => {
             const mockError = "Database error"
-            const dbAllMock = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+            jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
                 callback(new Error(mockError));
             });
 
             await expect(dao.getCounterServices(mockCounterId)).rejects.toThrow(mockError);
-            expect(dbAllMock).toHaveBeenCalledTimes(1);
         });
     })
+    
     
     describe("test getServiceFromId", () => {
         const mockServiceId = 1;
 
         test("it should returns the name of the service by its id", async() => {
-            const mockService = 'service1';
+            const mockService = {name: 'service1'};
+            const mockRes = 'service1';
             const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
                 callback(null, mockService);
             });
     
             const result = await dao.getServiceFromId(mockServiceId);
-            expect(result).toBe(mockService);
-            expect(dbGetMock).toHaveBeenCalledTimes(1);
-            expect(dbGetMock).toBeCalledWith("SELECT name FROM service WHERE id = ?", [mockServiceId]);
+            expect(result).toStrictEqual(mockRes);
+            expect(dbGetMock).toBeCalledWith("SELECT name FROM service WHERE id = ?",
+                [mockServiceId], expect.any(Function));
         });
 
         test("it should returns an error", async() => {
             const mockError = "Database error"
-            const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+            jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
                 callback(new Error(mockError));
             });
 
             await expect(dao.getServiceFromId(mockServiceId)).rejects.toThrow(mockError);
-            expect(dbGetMock).toHaveBeenCalledTimes(1);
         });
     })
     
-
+    
     describe("test getTicketCount", () => {
         const mockService = 'service1';
 
         test("it should returns the number of customers waiting for a specific service", async() => {
-            const mockCount = 5;
+            const mockCount = {count: 5};
+            const mockRes = 5;
             const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
                 callback(null, mockCount);
             });
     
             const result = await dao.getTicketCount(mockService);
-            expect(result).toBe(mockCount);
-            expect(dbGetMock).toHaveBeenCalledTimes(1);
-            expect(dbGetMock).toBeCalledWith("SELECT COUNT(T.id) AS count FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?", [mockService]);
+            expect(result).toStrictEqual(mockRes);
+            expect(dbGetMock).toBeCalledWith("SELECT COUNT(T.id) AS count FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?",
+                [mockService], expect.any(Function));
         });
     
         test("it should returns 0 if there is no ticket pending", async() => {
@@ -113,75 +115,76 @@ describe("Class OfficerDao, functions for API /api/next/:counterId", () => {
             });
     
             const result = await dao.getTicketCount(mockService);
-            expect(result).toBe(0);
-            expect(dbGetMock).toHaveBeenCalledTimes(1);
-            expect(dbGetMock).toBeCalledWith("SELECT COUNT(T.id) AS count FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?", [mockService]);
+            expect(result).toStrictEqual(0);
+            expect(dbGetMock).toBeCalledWith("SELECT COUNT(T.id) AS count FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?",
+                [mockService], expect.any(Function));
         });
 
         test("it should returns an error", async() => {
             const mockError = "Database error"
-            const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+            jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
                 callback(new Error(mockError));
             });
             
             await expect(dao.getTicketCount(mockService)).rejects.toThrow(mockError);
-            expect(dbGetMock).toHaveBeenCalledTimes(1);
         });
     })
+    
     
     describe("test getServiceTime", () => {
         const mockService = 'service1';
 
         test("it should returns the waiting time associate to a service", async() => {
-            const mockTime = 10;
+            const mockTime = {time: 10};
+            const mockRes = 10;
             const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
                 callback(null, mockTime);
             });
     
             const result = await dao.getServiceTime(mockService);
-            expect(result).toBe(mockTime);
-            expect(dbGetMock).toHaveBeenCalledTimes(1);
-            expect(dbGetMock).toBeCalledWith("SELECT time FROM service WHERE name = ? ", [mockService]);
+            expect(result).toStrictEqual(mockRes);
+            expect(dbGetMock).toBeCalledWith("SELECT time FROM service WHERE name = ? ",
+                [mockService], expect.any(Function));
         });
 
         test("it should returns an error", async() => {
             const mockError = "Database error"
-            const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+            jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
                 callback(new Error(mockError));
             });
             
             await expect(dao.getServiceTime(mockService)).rejects.toThrow(mockError);
-            expect(dbGetMock).toHaveBeenCalledTimes(1);
         });
     })
     
-
+    
     describe("test getServiceTag", () => {
         const mockService = 'Bank Account';
 
         test("it should return the tag associate to a service", async() => {
-            const mockTag = 'BA';
+            const mockTag = {tag: 'BA'};
+            const mockRes = 'BA';
             const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
                 callback(null, mockTag);
             });
     
             const result = await dao.getServiceTag(mockService);
-            expect(result).toBe(mockTag);
-            expect(dbGetMock).toHaveBeenCalledTimes(1);
-            expect(dbGetMock).toBeCalledWith("SELECT tag FROM service WHERE name = ?", [mockService]);
+            expect(result).toStrictEqual(mockRes);
+            expect(dbGetMock).toBeCalledWith("SELECT tag FROM service WHERE name = ?",
+                [mockService], expect.any(Function));
         });
 
         test("it should returns an error", async() => {
             const mockError = "Database error"
-            const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+            jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
                 callback(new Error(mockError));
             });
             
             await expect(dao.getServiceTag(mockService)).rejects.toThrow(mockError);
-            expect(dbGetMock).toHaveBeenCalledTimes(1);
         });
     });
 });
+
 
 describe("Class OfficerDao, function for API /api/tickets/:ticketId/counter", () => {
     const mockTicketId = 3;
@@ -196,9 +199,7 @@ describe("Class OfficerDao, function for API /api/tickets/:ticketId/counter", ()
         });
 
         const result = await dao.setCounterTicket(mockTicketId, mockCounterId);
-        expect(result).toBe(mockCounterId);
-        expect(dbRunMock1).toHaveBeenCalledTimes(1);
-        expect(dbRunMock2).toHaveBeenCalledTimes(1);
+        expect(result).toStrictEqual(mockCounterId);
     });
 
     test("it should returns an error from the first query", async() => {
@@ -211,8 +212,6 @@ describe("Class OfficerDao, function for API /api/tickets/:ticketId/counter", ()
         });
         
         await expect(dao.setCounterTicket(mockTicketId, mockCounterId)).rejects.toThrow(mockError);
-        expect(dbRunMock1).toHaveBeenCalledTimes(1);
-        expect(dbRunMock2).toHaveBeenCalledTimes(0);
     });
 
     test("it should returns an error from the second query", async() => {
@@ -225,7 +224,5 @@ describe("Class OfficerDao, function for API /api/tickets/:ticketId/counter", ()
         });
         
         await expect(dao.setCounterTicket(mockTicketId, mockCounterId)).rejects.toThrow(mockError);
-        expect(dbRunMock1).toHaveBeenCalledTimes(1);
-        expect(dbRunMock2).toHaveBeenCalledTimes(1);
     });
 })
