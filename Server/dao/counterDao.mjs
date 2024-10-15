@@ -7,7 +7,7 @@ const db = new sqlite.Database('db/db.sqlite', (err) => {
 export default function CounterDao() {
     this.getCounters = () => {
         return new Promise((resolve, reject) => {
-            const sql = "SELECT id FROM  counter";
+            const sql = "SELECT id FROM counter";
             db.all(sql, [], (err, rows) => {
                 if (err) {
                     return reject(err);
@@ -19,11 +19,10 @@ export default function CounterDao() {
 
     this.getServicesByCounterId = (counterId) => {
         return new Promise((resolve, reject) => {
-            const sql = `
-                SELECT s.id, s.name 
-                FROM service s
-                JOIN counter_service cs ON s.id = cs.service_id
-                WHERE cs.counter_id = ?`;
+            const sql = `SELECT s.id, s.name
+                         FROM service s
+                         JOIN counter_service cs ON s.id = cs.service_id
+                         WHERE cs.counter_id = ?`;
             db.all(sql, [counterId], (err, rows) => {
                 if (err) {
                     return reject(err);
@@ -55,6 +54,7 @@ export default function CounterDao() {
             });
         });
     }
+
     this.getTicketTag = (id) => {
         return new Promise((resolve, reject) => {
             const sql = "SELECT id, s_tag FROM ticket WHERE id = ?"
@@ -68,9 +68,10 @@ export default function CounterDao() {
             });
         });
     }
+    
     this.getNumberOfTicketsInQueue = async (t_id) => {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT COUNT(*) as ticketInQueue, s.tag
+            const sql = `SELECT COUNT(*) as ticketInQueue
                          FROM ticket t, service s
                          WHERE t.s_tag = s.tag
                          AND t.c_id IS NULL

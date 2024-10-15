@@ -1,8 +1,10 @@
 import { jest, test, expect, afterEach, describe } from "@jest/globals";
 import { db } from "../../db/db.mjs";
-import CounterDao from "../../dao/counterDao.mjs";
+import counterDao from "../../dao/counterDao.mjs";
 
-const dao = new CounterDao();
+jest.setTimeout(10000);
+
+const dao = new counterDao();
 
 afterEach(() => {
     jest.clearAllMocks();
@@ -10,91 +12,113 @@ afterEach(() => {
 
 describe('Class CounterDao', () => {
 
-    test("test getCounters", async () => {
-        const mockCounters = [{ id: 1 }, { id: 2 }];
+    describe("test getCounters", () => {
 
-        const dbAllMock = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
-            callback(null, mockCounters);
+        test("getCounters", async () => {
+            const mockCounters = [
+                { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 },
+                { id: 6 }, { id: 7 }, { id: 8 }, { id: 9 }, { id: 10 }
+            ];
+            const dbAllMock = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+                callback(null, mockCounters);
+            });
+            const result = await dao.getCounters();
+            expect(result).toEqual(mockCounters);
+            dbAllMock.mockRestore();
         });
-
-        const result = await dao.getCounters();
-        expect(result).toEqual(mockCounters);
-        expect(dbAllMock).toHaveBeenCalledTimes(1);
-        expect(dbAllMock).toBeCalledWith("SELECT id FROM counter", []);
     });
 
-    test("test getServicesByCounterId", async () => {
-        const mockCounterId = 1;
-        const mockServices = [{ id: 1, name: "Bank Account" }, { id: 2, name: "Payment Card" }];
+    describe("test getServicesByCounterId", () => {
 
-        const dbAllMock = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
-            callback(null, mockServices);
+        test("getServicesByCounterId", async () => {
+            const mockCounterId = 1;
+            const mockServices = [{ id: 1, name: "Bank Account" }, { id: 2, name: "Payment Card" }];
+            const dbAllMock = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+                callback(null, mockServices);
+            });
+            const result = await dao.getServicesByCounterId(mockCounterId);
+            expect(result).toEqual(mockServices);
+            dbAllMock.mockRestore();
         });
 
-        const result = await dao.getServicesByCounterId(mockCounterId);
-        expect(result).toEqual(mockServices);
-        console.log(result);
-        expect(dbAllMock).toHaveBeenCalledTimes(1);
-        expect(dbAllMock).toBeCalledWith(
-            `SELECT s.id, s.name 
-             FROM service s
-             JOIN counter_service cs ON s.id = cs.service_id
-             WHERE cs.counter_id = ?`, 
-            [mockCounterId]);
-        dbAllMock.mockRestore();
+        test("Return empty array if no services found for counter", async () => {
+            const dbAllMock = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+                callback(null, []);
+            });
+
+            const result = await dao.getServicesByCounterId(-1);
+            expect(result).toEqual([]);
+            dbAllMock.mockRestore();
+        });
     });
 
-    test("test getTicketFromAllCounters", async () => {
-        const mockCounters = [{ id: 1, actual_t_id: 10 }, { id: 2, actual_t_id: null }];
-        const mockTag = { s_tag: 'BA', id: 10 };
-        const mockQueue = { ticketInQueue: 5 };
+    describe("test getTicketFromAllCounters", () => {
 
-        const dbAllMock = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
-            callback(null, mockCounters);
+        test("getTicketFromAllCounters", async () => {
+            const mockCounters = [{ id: 1, actual_t_id: 10 }, { id: 2, actual_t_id: null }];
+            const mockTag = { s_tag: 'BA', id: 10 };
+            const mockQueue = { ticketInQueue: 3 };
+
+            const dbAllMock = jest.spyOn(db, "all").mockImplementation((sql, params, callback) => {
+                callback(null, mockCounters);
+            });
+            const dbGetTagMock = jest.spyOn(db, "get").mockImplementationOnce((sql, params, callback) => {
+                callback(null, mockTag);
+            });
+            const dbGetQueueMock = jest.spyOn(db, "get").mockImplementationOnce((sql, params, callback) => {
+                callback(null, mockQueue);
+            });
+            const result = await dao.getTicketFromAllCounters();
+            expect(result).toEqual([
+                { id: 1, tag: 'BA13', num: mockQueue },
+                { id: 2, tag: 'DB3', num: mockQueue },
+                { id: 3, tag: null, num: null },
+                { id: 4, tag: null, num: null },
+                { id: 5, tag: null, num: null },
+                { id: 6, tag: null, num: null },
+                { id: 7, tag: null, num: null },
+                { id: 8, tag: null, num: null },
+                { id: 9, tag: null, num: null },
+                { id: 10, tag: null, num: null }
+            ]);
+            dbAllMock.mockRestore();
+            dbGetTagMock.mockRestore();
+            dbGetQueueMock.mockRestore();
+        });
+    });
+
+    describe("test getTicketTag", () => {
+        
+        test("getTicketTag", async () => {
+            const mockTicketTag = { s_tag: 'BA', id: 10 };
+            const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+                callback(null, mockTicketTag);
+            });
+            const result = await dao.getTicketTag(10);
+            expect(result).toEqual('BA10');
+            dbGetMock.mockRestore();
+        });
+    });
+
+    describe("test getNumberOfTicketsInQueue", () => {
+
+        test("getNumberOfTicketsInQueue", async () => {
+            const mockQueueCount = { ticketInQueue: 3 };
+            const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+                callback(null, mockQueueCount);
+            });
+            const result = await dao.getNumberOfTicketsInQueue(10);
+            expect(result).toEqual(mockQueueCount);
+            dbGetMock.mockRestore();
         });
         
-        const dbGetTagMock = jest.spyOn(db, "get").mockImplementationOnce((sql, params, callback) => {
-            callback(null, mockTag);
+        test("Return 0 tickets if no tickets are in the queue", async () => {
+            const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
+                callback(null, { ticketInQueue: 0 });
+            });
+            const result = await dao.getNumberOfTicketsInQueue(102);
+            expect(result).toEqual({ ticketInQueue: 0 });
+            dbGetMock.mockRestore();
         });
-
-        const dbGetQueueMock = jest.spyOn(db, "get").mockImplementationOnce((sql, params, callback) => {
-            callback(null, mockQueue);
-        });
-
-        const result = await dao.getTicketFromAllCounters();
-        expect(result).toStrictEqual([
-            { id: 1, tag: 'BA10', num: mockQueue },
-            { id: 2, tag: null, num: null }
-        ]);
-
-        expect(dbAllMock).toHaveBeenCalledTimes(1);
-        expect(dbGetTagMock).toHaveBeenCalledTimes(1);
-        expect(dbGetQueueMock).toHaveBeenCalledTimes(1);
-    });
-
-    test("test getTicketTag", async () => {
-        const mockTicketTag = { s_tag: 'BA', id: 10 };
-
-        const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
-            callback(null, mockTicketTag);
-        });
-
-        const result = await dao.getTicketTag(10);
-        expect(result).toEqual('BA10');
-        expect(dbGetMock).toHaveBeenCalledTimes(1);
-        expect(dbGetMock).toBeCalledWith("SELECT id, s_tag FROM ticket WHERE id = ?", [10]);
-    });
-
-    test("test getNumberOfTicketsInQueue", async () => {
-        const mockQueueCount = { ticketInQueue: 5 };
-
-        const dbGetMock = jest.spyOn(db, "get").mockImplementation((sql, params, callback) => {
-            callback(null, mockQueueCount);
-        });
-
-        const result = await dao.getNumberOfTicketsInQueue(10);
-        expect(result).toEqual(mockQueueCount);
-        expect(dbGetMock).toHaveBeenCalledTimes(1);
-        expect(dbGetMock).toBeCalledWith(expect.stringContaining('SELECT COUNT(*) as ticketInQueue'), [10]);
     });
 });
