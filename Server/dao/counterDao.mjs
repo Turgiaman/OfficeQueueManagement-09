@@ -7,7 +7,7 @@ const db = new sqlite.Database('db/db.sqlite', (err) => {
 export default function CounterDao() {
     this.getCounters = () => {
         return new Promise((resolve, reject) => {
-            const sql = "SELECT id FROM  counter";
+            const sql = "SELECT id FROM counter";
             db.all(sql, [], (err, rows) => {
                 if (err) {
                     return reject(err);
@@ -54,6 +54,7 @@ export default function CounterDao() {
             });
         });
     }
+
     this.getTicketTag = (id) => {
         return new Promise((resolve, reject) => {
             const sql = "SELECT id, s_tag FROM ticket WHERE id = ?"
@@ -67,6 +68,7 @@ export default function CounterDao() {
             });
         });
     }
+    
     this.getNumberOfTicketsInQueue = async (t_id) => {
         return new Promise((resolve, reject) => {
             const sql = `SELECT COUNT(*) as ticketInQueue
