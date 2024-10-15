@@ -53,7 +53,7 @@ const setCounterTicket = async (ticketId, counterId) => {
 
 };
 
-const getOfficers = async (counterId) => {
+const getOfficers = async () => {
   const response = await fetch(SERVER_URL + `/api/officers`, {
     method: 'GET',
   });

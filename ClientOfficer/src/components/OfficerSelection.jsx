@@ -47,7 +47,7 @@ const EmployeeSelectionModal = ({ show, setShow, counterId, setCounterId}) => {
     return (
         <Modal show={show} onHide={handleCloseModal}>
             <Modal.Header closeButton>
-                <Modal.Title>Select Your Employee</Modal.Title>
+                <Modal.Title>Who are you?</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {loading ? (
@@ -62,8 +62,7 @@ const EmployeeSelectionModal = ({ show, setShow, counterId, setCounterId}) => {
                                 style={{ cursor: 'pointer', width: '100%' }}
                             >
                                 <Card.Body>
-                                    <Card.Title className="text-primary">{employee.key_name}</Card.Title>
-                                    <Card.Text>ID: {employee.id}</Card.Text>
+                                    <Card.Title className="text-primary">{employee.name + " " + employee.surname}</Card.Title>
                                 </Card.Body>
                             </Card>
                         ))}

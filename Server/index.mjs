@@ -123,8 +123,8 @@ app.get('/api/counters/actual_client', async(req, res) => {
 
 app.get('/api/officers', async(req, res) => {
     try{
-        const clients= await officerDao.getOfficers();
-        res.status(200).json(clients);
+        const officers= await officerDao.getOfficers();
+        res.status(200).json(officers);
     }catch(error) {
         res.status(503).json({error: error.message});
     }
