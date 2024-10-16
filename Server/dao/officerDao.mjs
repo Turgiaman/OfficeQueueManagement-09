@@ -1,7 +1,7 @@
 import { db } from "../db/db.mjs";
 
-export default function OfficerDao() {
-    this.getNextCustomer = (nextService) => {
+export default class OfficerDao {
+    getNextCustomer (nextService) {
         return new Promise((resolve, reject) => {
             const sql = "SELECT T.id, T.s_tag FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?";
             db.all(sql, [nextService], (err, row) => {
@@ -13,7 +13,7 @@ export default function OfficerDao() {
         })
     }
 
-    this.getCounterServices = (counterId) => {
+    getCounterServices (counterId) {
         return new Promise((resolve, reject) => {
             const sql = "SELECT service_id FROM counter_service WHERE counter_id = ?"
             db.all(sql, [counterId], async (err, rows) => {
@@ -28,7 +28,7 @@ export default function OfficerDao() {
         });
     }
 
-    this.getServiceFromId = (id) => {
+    getServiceFromId (id) {
         return new Promise((resolve, reject) => {
             const sql = "SELECT name FROM service WHERE id = ?";
             db.get(sql, [id], (err, row) => {
@@ -42,7 +42,7 @@ export default function OfficerDao() {
         });
     }
 
-    this.getTicketCount = (service) => {
+    getTicketCount (service) {
         return new Promise((resolve, reject) => {
             const sql2 = "SELECT COUNT(T.id) AS count FROM ticket T, service S WHERE T.s_tag =  S.tag AND T.c_id IS NULL AND S.name = ?";
             db.get(sql2, [service], (err, row) => {
@@ -59,7 +59,7 @@ export default function OfficerDao() {
         });
     }
 
-    this.getServiceTime = (service) => {
+    getServiceTime  (service)  {
         return new Promise((resolve, reject) => {
             const sql2 = "SELECT time FROM service WHERE name = ? ";
             db.get(sql2, [service], (err, row) => {
@@ -73,7 +73,7 @@ export default function OfficerDao() {
         });
     }
 
-    this.getServiceTag = (service) => {
+    getServiceTag (service) {
         return new Promise((resolve, reject) => {
             const sql = "SELECT tag FROM service WHERE name = ?";
             db.get(sql, [service], (err, row) => {
@@ -87,7 +87,7 @@ export default function OfficerDao() {
         });
     }
 
-    this.setCounterTicket = (ticketId, counterId) => {
+    setCounterTicket (ticketId, counterId) {
         return new Promise((resolve, reject) => {
             const sql1 = `
             UPDATE ticket
@@ -114,7 +114,7 @@ export default function OfficerDao() {
         });
     }
 
-    this.getOfficers = () => {
+    getOfficers () {
         return new Promise((resolve, reject) => {
             const sql = `
                 SELECT id, name, surname
@@ -131,7 +131,7 @@ export default function OfficerDao() {
         });
     };
 
-    this.setOfficerCounter = (employeeId,counterId) => {
+    setOfficerCounter (employeeId,counterId){
         return new Promise((resolve, reject) => {
             const sql = `
             UPDATE counter
