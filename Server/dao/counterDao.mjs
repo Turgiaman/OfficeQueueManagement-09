@@ -4,8 +4,8 @@ const db = new sqlite.Database('db/db.sqlite', (err) => {
     if (err) throw err;
 })
 
-export default function CounterDao() {
-    this.getCounters = () => {
+export default class CounterDao {
+    getCounters () {
         return new Promise((resolve, reject) => {
             const sql = "SELECT id FROM counter";
             db.all(sql, [], (err, rows) => {
@@ -17,7 +17,7 @@ export default function CounterDao() {
         });
     }
 
-    this.getServicesByCounterId = (counterId) => {
+    getServicesByCounterId (counterId) {
         return new Promise((resolve, reject) => {
             const sql = `SELECT s.id, s.name
                          FROM service s
@@ -33,7 +33,7 @@ export default function CounterDao() {
         });
     }
 
-    this.getTicketFromAllCounters = () => {
+    getTicketFromAllCounters () {
         return new Promise((resolve, reject) => {
             const sql = "SELECT id, actual_t_id FROM counter"
             db.all(sql, [], async (err, rows) => {
@@ -55,7 +55,7 @@ export default function CounterDao() {
         });
     }
 
-    this.getTicketTag = (id) => {
+    getTicketTag (id) {
         return new Promise((resolve, reject) => {
             const sql = "SELECT id, s_tag FROM ticket WHERE id = ?"
             db.get(sql, [id], (err, row) => {
@@ -69,7 +69,7 @@ export default function CounterDao() {
         });
     }
     
-    this.getNumberOfTicketsInQueue = async (t_id) => {
+    async getNumberOfTicketsInQueue  (t_id){
         return new Promise((resolve, reject) => {
             const sql = `SELECT COUNT(*) as ticketInQueue
                          FROM ticket t, service s
