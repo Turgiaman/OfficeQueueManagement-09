@@ -10,6 +10,19 @@ const getCounters = async () => {
   }
 }
 
+const getServices=async()=>{
+  const response= await fetch(SERVER_URL+'/api/services',{
+      method:'GET',
+    });
+    const services = await response.json();
+    if(response.ok){
+      return services;
+    }
+    else{
+      throw new Error("Internal server error");
+    }
+}
+
 const getServicesByCounterId = async (counterId) => {
   const res = await fetch(SERVER_URL + `/api/counters/${counterId}/services`);
   if (res.ok) {
@@ -86,5 +99,25 @@ const setOfficerCounter = async (employeeId, counterId) => {
 
 };
 
-const API = { getCounters, getServicesByCounterId, getNextCustomer, setCounterTicket, getOfficers, setOfficerCounter }
+const getTicketCountsByCounter = async (period, service, date) => {
+  const res = await fetch(`${SERVER_URL}/api/counts/counter?period=${period}&date=${date}&service=${service}`);
+  if (res.ok) {
+      const data = await res.json();
+      return data;
+  } else {
+      throw new Error("Internal server error");
+  }
+}
+
+const getTicketCountsByService = async (period, date) => {
+  const res = await fetch(`${SERVER_URL}/api/counts/service?period=${period}&date=${date}`);
+  if (res.ok) {
+      const data = await res.json();
+      return data;
+  } else {
+      throw new Error("Internal server error");
+  }
+}
+
+const API = { getCounters, getServices, getServicesByCounterId, getNextCustomer, setCounterTicket, getOfficers, setOfficerCounter, getTicketCountsByCounter, getTicketCountsByService}
 export default API;

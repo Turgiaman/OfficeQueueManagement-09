@@ -171,5 +171,73 @@
         ```
     - Error responses: 503 Service Unavailable (service error)
 
+- GET /api/counts/counter
+    - Description: Retrieve ticket counts by counter for a specified service over a defined period.
+    - Request body: None
+    - Request query parameters:
+    - period (string): Specifies the time frame for the ticket counts. Acceptable - values are 'daily', 'weekly', or 'monthly'.
+    - service (string): The service for which the ticket counts are to be retrieved. This parameter is required.
+    - date (string): The date for which to retrieve the ticket counts, expected in the format YYYY-MM-DD. 
+    If 'period' is 'daily', it is considered exactly that day;
+    if 'period' is 'weekly' from the day of 'date' to next six days;
+    if 'period' is 'monthly', it is considered the month of 'date'.
+    This parameter is required.
+    - Response: 200 OK (success)
+    - Response body: An array containing ticket counts for each counter (period can be YYYY-MM-DD, YYYY-WW, YYYY-MM)
+        ``` json
+        [
+            {
+                "c_id": 1,
+                "period": "2024-10-10",
+                "ticket_count": 1
+            },
+            {
+                "c_id": 3,
+                "period": "2024-10-10",
+                "ticket_count": 1
+            }
+        ]
+        ```
+    - Error responses:
+        - 400 Bad Request:
+        If period is invalid (not one of daily, weekly, or monthly).
+        If date is missing or improperly formatted.
+        If service is missing.
+        - 500 Internal Server Error: If there is an issue retrieving the data from the server.
+
+
+- GET /api/counts/service
+    - Description: Retrieve ticket counts by service over a defined period.
+    - Request body: None
+    - Request query parameters:
+        - period (string): Specifies the time frame for the ticket counts. Acceptable values are daily, weekly, or monthly.
+        - date (string): The date for which to retrieve the ticket counts, expected in the format YYYY-MM-DD. 
+        If 'period' is 'daily', it is considered exactly that day;
+        if 'period' is 'weekly' from the day of 'date' to next six days;
+        if 'period' is 'monthly', it is considered the month of 'date'.
+        This parameter is required.
+    - Response: 200 OK (success)
+    - Response body: An array containing the ticket counts for each service based on the specified parameters (period can be YYYY-MM-DD, YYYY-WW, YYYY-MM)
+        ``` json
+        [
+            {
+                "s_tag": "BA",
+                "period": "2024-10",
+                "ticket_count": 10
+            },
+            {
+                "s_tag": "DB",
+                "period": "2024-10",
+                "ticket_count": 5
+            },
+            ...
+        ]
+        ```
+    - Error responses:
+        - 400 Bad Request:
+        If period is invalid (not one of daily, weekly, or monthly).
+        If date is missing or improperly formatted.
+        - 500 Internal Server Error: If there is an issue retrieving the data from the server.
+
 
 

@@ -7,6 +7,7 @@ import NavHeader from './components/NavHeader'
 import { useEffect } from 'react'
 import { Routes, Route, Outlet } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import StatisticsPage from './components/StatsComponents';
 
 function App() {
 
@@ -35,6 +36,10 @@ function App() {
         <Route
           path="/counter/:id"
           element={<ManageCounter />}
+        />
+        <Route
+          path='/manager'
+          element={<StatisticsPage />}
         />
       </Route>
     </Routes>

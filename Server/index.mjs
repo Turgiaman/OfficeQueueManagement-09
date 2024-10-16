@@ -4,10 +4,12 @@ import cors from "cors";
 import CounterDao from "./dao/counterDao.mjs";
 import TotemDao from "./dao/totemDao.mjs";
 import OfficerDao from "./dao/officerDao.mjs";
+import TicketDao from "./dao/ticketDao.mjs";
 
 const counterDao = new CounterDao();
 const totemDao = new TotemDao();
 const officerDao = new OfficerDao();
+const ticketDao = new TicketDao();
 
 // init express
 const app = new express();
@@ -17,50 +19,50 @@ const port = 3001;
 app.use(express.json());
 app.use(morgan("dev"));
 const corsOptions = {
-  origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175"],
-  optionsSuccessStatus: 200,
-  credentials: true,
+    origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175"],
+    optionsSuccessStatus: 200,
+    credentials: true,
 };
 app.use(cors(corsOptions));
 
 
 // ROUTES
 app.get('/api/counters', async (req, res) => {
-  try {
-    const counters = await counterDao.getCounters();
-    return res.status(200).json(counters);
-  }
-  catch (error) {
-    return res.status(500).json({ message: 'Internal server error' });
-  }
+    try {
+        const counters = await counterDao.getCounters();
+        return res.status(200).json(counters);
+    }
+    catch (error) {
+        return res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 app.get('/api/counters/:id/services', async (req, res) => {
-  try {
-      const counterId = req.params.id;
-      const services = await counterDao.getServicesByCounterId(counterId);
-      res.status(200).json(services);
-  } catch (error) {
-      res.status(500).json({ error: "Internal server error" });
-  }
+    try {
+        const counterId = req.params.id;
+        const services = await counterDao.getServicesByCounterId(counterId);
+        res.status(200).json(services);
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+    }
 });
 
-app.get('/api/services',async (req,res)=>{
+app.get('/api/services', async (req, res) => {
     try {
-        let services=await totemDao.getServices();
+        let services = await totemDao.getServices();
         res.status(200).json(services);
     } catch (error) {
         res.status(503).json({ error: error.message });
     }
 })
 
-app.get('/api/counters/:counterId/next',async (req,res)=>{
+app.get('/api/counters/:counterId/next', async (req, res) => {
     try {
-        let next = {tag: null, id: 0};
+        let next = { tag: null, id: 0 };
         let services = [];
-        
+
         const serviceIds = await officerDao.getCounterServices(req.params.counterId);
-        for(let serviceId of serviceIds)
+        for (let serviceId of serviceIds)
             services.push(await officerDao.getServiceFromId(serviceId));
 
         let max = 0;
@@ -78,7 +80,7 @@ app.get('/api/counters/:counterId/next',async (req,res)=>{
                 }
             }
         }
-        if(max)
+        if (max)
             next = await officerDao.getNextCustomer(next_service);
         res.status(200).json(next);
     } catch (error) {
@@ -102,31 +104,31 @@ app.put('/api/tickets/:ticketId', async (req, res) => {
     }
 });
 
-app.get('/api/ticket/:service', async(req, res) => {
-    try{
+app.get('/api/ticket/:service', async (req, res) => {
+    try {
         const serviceTag = await officerDao.getServiceTag(req.params.service)
         const ticket = await totemDao.getTicket(serviceTag);
         res.status(200).json(ticket);
-    }catch(error) {
-        res.status(503).json({error: error.message});
+    } catch (error) {
+        res.status(503).json({ error: error.message });
     }
 })
 
-app.get('/api/counters/actual_client', async(req, res) => {
-    try{
-        const clients= await counterDao.getTicketFromAllCounters();
+app.get('/api/counters/actual_client', async (req, res) => {
+    try {
+        const clients = await counterDao.getTicketFromAllCounters();
         res.status(200).json(clients);
-    }catch(error) {
-        res.status(503).json({error: error.message});
+    } catch (error) {
+        res.status(503).json({ error: error.message });
     }
 })
 
-app.get('/api/officers', async(req, res) => {
-    try{
-        const officers= await officerDao.getOfficers();
+app.get('/api/officers', async (req, res) => {
+    try {
+        const officers = await officerDao.getOfficers();
         res.status(200).json(officers);
-    }catch(error) {
-        res.status(503).json({error: error.message});
+    } catch (error) {
+        res.status(503).json({ error: error.message });
     }
 })
 
@@ -146,9 +148,55 @@ app.put('/api/counters/:counterId', async (req, res) => {
     }
 });
 
+app.get('/api/counts/counter', async (req, res) => {
+    const { period, service, date } = req.query;
 
+    // Validate period
+    if (!['daily', 'weekly', 'monthly'].includes(period)) {
+        return res.status(400).json({ message: 'Invalid period parameter. Use daily, weekly, or monthly.' });
+    }
+
+    // Validate date
+    if (!date) {
+        return res.status(400).json({ message: 'Date parameter is required.' });
+    }
+
+    if (!service) {
+        return res.status(400).json({ message: 'Service parameter is required.' });
+    }
+
+    try {
+        const results = await ticketDao.getTicketCountsByCounter(period, service, date);
+        res.status(200).json(results);
+    } catch (error) {
+        console.error('Error fetching counter statistics:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.get('/api/counts/service', async (req, res) => {
+    const { period, date } = req.query;
+
+    // Validate period
+    if (!['daily', 'weekly', 'monthly'].includes(period)) {
+        return res.status(400).json({ message: 'Invalid period parameter. Use daily, weekly, or monthly.' });
+    }
+
+    // Validate date
+    if (!date) {
+        return res.status(400).json({ message: 'Date parameter is required.' });
+    }
+
+    try {
+        const results = await ticketDao.getTicketCountsByService(period, date);
+        res.status(200).json(results);
+    } catch (error) {
+        console.error('Error fetching service statistics:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
 // activate the server
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
-  });
+});
