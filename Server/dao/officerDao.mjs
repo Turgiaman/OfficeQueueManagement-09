@@ -117,7 +117,7 @@ export default class OfficerDao {
     getOfficers () {
         return new Promise((resolve, reject) => {
             const sql = `
-                SELECT id, name, surname
+                SELECT id, key_name
                 FROM employee
                 WHERE role = ?`;
             
