@@ -40,6 +40,35 @@ describe('Class TotemRoutes', () => {
             expect(response.status).toBe(200);
             expect(response.body).toStrictEqual("BA21")
         });
+        test('It should return 503 on error from officerDao.getServiceTag', async () => {
+            // Mock officerDao.getServiceTag to throw an error
+            jest.spyOn(OfficerDao.prototype, 'getServiceTag').mockRejectedValueOnce(new Error('Service tag not found'));
+    
+            // Make a GET request to the /api/ticket/:service route
+            const response = await request(app).get('/api/ticket/myservice');
+    
+            // Assert that the status is 503
+            expect(response.status).toBe(503);
+    
+            // Assert that the response contains the error message
+            expect(response.body).toStrictEqual({ error: 'Service tag not found' });
+        });
+        test('It should return 503 on error from totemDao.getTicket', async () => {
+            // Mock officerDao.getServiceTag to return a valid service tag
+            jest.spyOn(OfficerDao.prototype, 'getServiceTag').mockResolvedValueOnce('serviceTag123');
+    
+            // Mock totemDao.getTicket to throw an error
+            jest.spyOn(TotemDao.prototype, 'getTicket').mockRejectedValueOnce(new Error('Ticket generation failed'));
+    
+            // Make a GET request to the /api/ticket/:service route
+            const response = await request(app).get('/api/ticket/myservice');
+    
+            // Assert that the status is 503
+            expect(response.status).toBe(503);
+    
+            // Assert that the response contains the error message
+            expect(response.body).toStrictEqual({ error: 'Ticket generation failed' });
+        });
 
 
     })
