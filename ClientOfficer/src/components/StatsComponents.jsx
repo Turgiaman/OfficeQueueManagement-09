@@ -53,7 +53,7 @@ const StatisticsPage = () => {
 
     return (
         <div className="container mt-4">
-            <h1 className="text-center text-primary mb-4">Statistics Page</h1> {/* Colore primario per il titolo */}
+            <h1 className="text-center text-primary mb-4">Statistics</h1> {/* Colore primario per il titolo */}
             <div className="d-flex gap-4">
                 {/* Sezione per la selezione dei parametri */}
                 <div className="col-md-5">
@@ -90,6 +90,7 @@ const StatisticsPage = () => {
                             {statType === 'counter' && (
                                 <div className="mb-3">
                                     <label htmlFor="service-select" className="form-label">Select Service:</label>
+                                    <br/>
                                     <select
                                         id="service-select"
                                         className="form-select"

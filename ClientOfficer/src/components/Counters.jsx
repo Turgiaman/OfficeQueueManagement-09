@@ -1,34 +1,51 @@
 import { useParams, Link} from 'react-router-dom';
-import { Card, Button, Container, Spinner } from 'react-bootstrap';
+import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import API from '../../../API/API_Officer.mjs';
 import EmployeeSelectionModal from './OfficerSelection';
 
 export function CountersList(props) {
-
     const [showModal, setShowModal] = useState(false);
     const [selectedCounter, setSelectedCounter] = useState(null);
 
-    const handleOpenModal = (counterId) => {
+    const handleSelectCounter = (counterId) => {
         setSelectedCounter(counterId);
-        setShowModal(true);
+    };
+
+    const handleOpenModal = () => {
+        if (selectedCounter !== null) {
+            setShowModal(true);
+        }
     };
 
     return (
         <div className="container mt-5">
             <h1 className="text-center text-primary mb-4">Select a counter to manage the queue:</h1>
-            <div className="d-flex flex-column align-items-center"> {/* Utilizza flexbox per allineare verticalmente */}
+            <Row className="d-flex justify-content-center" style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '10px' }}>
                 {props.counters.map(counter => (
-                    <Card className="text-center mb-3" key={counter.id} style={{ width: '100%', maxWidth: '400px' }}>
-                        <Card.Body>
-                            <Card.Title>Counter {counter.id}</Card.Title>
-                            <Button variant="primary" onClick={() => handleOpenModal(counter.id)}>Manage Counter</Button>
-                        </Card.Body>
-                    </Card>
-
-                    
+                    <Col xs={12} md={6} key={counter.id} className="mb-3">
+                        <Card 
+                            className={`text-center ${selectedCounter === counter.id ? 'border-primary' : ''}`} 
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleSelectCounter(counter.id)}
+                        >
+                            <Card.Body>
+                                <Card.Title>Counter {counter.id}</Card.Title>
+                            </Card.Body>
+                        </Card>
+                    </Col>
                 ))}
-            </div>
+                {/* Pulsante posizionato qui all'interno del riquadro */}
+                <Col xs={12} className="text-center mt-3">
+                    <Button 
+                        variant="primary" 
+                        onClick={handleOpenModal} 
+                        disabled={selectedCounter === null} 
+                    >
+                        Manage Counter
+                    </Button>
+                </Col>
+            </Row>
             <EmployeeSelectionModal 
                 show={showModal} 
                 setShow={setShowModal}
@@ -37,7 +54,9 @@ export function CountersList(props) {
             />
         </div>
     );
+    
 }
+
 
 export function ManageCounter() {
     const { id } = useParams();

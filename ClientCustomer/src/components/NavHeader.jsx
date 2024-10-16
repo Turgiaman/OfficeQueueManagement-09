@@ -6,7 +6,7 @@ function NavHeader() {
         <Navbar className="navbar navbar-dark bg-primary">
             <Container fluid>
             <Navbar.Brand>
-            Office Queue (Customer)
+            Office Queue
             </Navbar.Brand>
             </Container>
         </Navbar>
