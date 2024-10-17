@@ -98,9 +98,9 @@ We respected strictly your DoD given in the slide
 2. More meetings (in persons / videocall)
 3. Use common best practices that are defined togheter
 4. Better to have branches for each stories or tasks
-
+5. Achieve the maximum amount of hours (16h in 2 weeks) for each member
   > Propose one or two
 
-- We smile, laugh anf joke to each other!!
-- We are proud of us: small team but strong one!!
 - One thing you are proud of as a Team!!
+  - We smile, laugh and joke to each other!!
+  - We are proud of us: small team but strong one!!
